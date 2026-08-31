@@ -165,7 +165,7 @@ Shopify Admin (default General delivery profile, Lagos location) currently inclu
 
 The same cart with a New York address returned international Standard ₦45,000 / Economy ₦55,000 / Express ₦75,000. Theme copy states that shipping is calculated at checkout. There is **no** free-shipping threshold in Admin.
 
-A second non-default **Rest of World** profile still lists Nigeria, Canada, UAE, and the United States at Nigeria domestic rates, but it has **no products assigned**. Catalog products use the default profile. Do not delete that profile without owner approval.
+A second non-default **Rest of World** profile has **no products assigned**. Nigeria was removed from that unused profile so it cannot compete with the General Nigeria zone. Catalog products use the default profile.
 
 ### Reviews (Judge.me)
 

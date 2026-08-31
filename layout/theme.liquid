@@ -11,8 +11,10 @@
     {{ tluxe_title | truncate: 55 | escape }}
     {%- assign tluxe_title_check = tluxe_title | downcase -%}
     {%- assign tluxe_shop_check = shop.name | downcase -%}
-    {%- unless tluxe_title_check contains tluxe_shop_check or tluxe_title_check contains 'tluxe' -%}
-      — {{ shop.name | escape }}
+    {%- unless tluxe_title_check contains tluxe_shop_check -%}
+      {%- unless tluxe_title_check contains 'tluxe' -%}
+        — {{ shop.name | escape }}
+      {%- endunless -%}
     {%- endunless -%}
   </title>
 

@@ -342,6 +342,15 @@ const CartDrawer = (function () {
   function addItem(formEl) {
     if (!formEl) return Promise.resolve();
     const formData = new FormData(formEl);
+    const requestedId = formData.get('id');
+    const variants = window.TLUXE_VARIANTS || [];
+    if (requestedId && variants.length) {
+      const match = variants.find(v => String(v.id) === String(requestedId));
+      if (match && match.available === false) {
+        showToast('This option is sold out');
+        return Promise.resolve();
+      }
+    }
     return fetch('/cart/add.js', {
       method: 'POST',
       headers: { Accept: 'application/json' },
