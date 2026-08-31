@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="{{ request.locale.iso_code }}" class="no-js">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <title>
+    {{ page_title | truncate: 55 }}
+    {% unless page_title contains shop.name %} — {{ shop.name }}{% endunless %}
+  </title>
+
+  {% if page_description %}
+    <meta name="description" content="{{ page_description | truncate: 125 | escape }}">
+  {% else %}
+    <meta name="description" content="TLUXE Hairs — Premium luxury human hair wigs. Beauty Redefined.">
+  {% endif %}
+
+  <!-- Open Graph -->
+  <meta property="og:site_name" content="{{ shop.name }}">
+  <meta property="og:url" content="{{ canonical_url }}">
+  <meta property="og:title" content="{{ page_title | truncate: 60 | escape }}">
+  <meta property="og:type" content="{% if template.name == 'product' %}product{% else %}website{% endif %}">
+
+  {% if page_image %}
+    <meta property="og:image" content="{{ page_image | image_url: width: 1200 }}">
+  {% elsif settings.og_image %}
+    <meta property="og:image" content="{{ settings.og_image | image_url: width: 1200 }}">
+  {% endif %}
+
+  {% if page_description %}
+    <meta property="og:description" content="{{ page_description | truncate: 125 | escape }}">
+  {% endif %}
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="{{ page_title | truncate: 60 | escape }}">
+  {% if page_description %}
+    <meta name="twitter:description" content="{{ page_description | truncate: 125 | escape }}">
+  {% endif %}
+
+  <!-- PWA -->
+  <meta name="theme-color" content="#C9A84C">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="TLUXE Hairs">
+
+  <link rel="apple-touch-icon" href="{{ 'icon-192.png' | asset_url }}">
+  <link rel="apple-touch-startup-image" href="{{ 'icon-512.png' | asset_url }}">
+
+  <!-- Canonical -->
+  <link rel="canonical" href="{{ canonical_url }}">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="{{ 'icon-96.png' | asset_url }}">
+  <link rel="shortcut icon" href="{{ 'icon-96.png' | asset_url }}">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Jost:wght@300;400;500;600&family=Dancing+Script:wght@600&display=swap">
+
+  <!-- Styles -->
+  {{ 'tluxe.css' | asset_url | stylesheet_tag }}
+
+  {{ content_for_header }}
+
+  {% if settings.show_paypal_hosted_button and template.name == 'product' %}
+    <!-- PayPal SDK: product pages only when Hosted Button is enabled. Hosted Button ID: QB5RLQFCC92HY -->
+    <script
+      src="https://www.paypal.com/sdk/js?client-id=BAAu7hRGAfPqQ-UBd0WXtavT2sr5DLKhI9wF38maakbLpItlJyYj9LvG1PWgD5wSAbIOI30FxCtE534JZs&components=hosted-buttons&disable-funding=venmo&currency=USD"
+      async
+    ></script>
+  {% endif %}
+
+  <script>
+    window.TLUXE = window.TLUXE || {};
+    window.TLUXE.swUrl = {{ 'sw.js' | asset_url | json }};
+    window.TLUXE.moneyFormat = {{ shop.money_format | json }};
+    window.TLUXE.currency = {{ cart.currency.iso_code | json }};
+    window.TLUXE.routes = {
+      root: {{ routes.root_url | json }},
+      cart: {{ routes.cart_url | json }},
+      search: {{ routes.search_url | json }},
+      allProducts: {{ routes.all_products_collection_url | json }},
+      account: {{ routes.account_url | json }},
+      accountLogin: {{ routes.account_login_url | json }},
+      accountLogout: {{ routes.account_logout_url | json }}
+    };
+    /* Manifest with absolute Shopify asset icon URLs (CDN-safe) */
+    (function () {
+      var manifest = {
+        name: 'TLUXE Hairs',
+        short_name: 'TLUXE',
+        description: 'Premium luxury hair. Beauty Redefined.',
+        start_url: {{ request.origin | append: routes.root_url | json }},
+        scope: {{ request.origin | append: routes.root_url | json }},
+        display: 'standalone',
+        background_color: '#0a0a0a',
+        theme_color: '#C9A84C',
+        orientation: 'portrait-primary',
+        icons: [
+          { src: {{ 'icon-192.png' | asset_url | json }}, sizes: '192x192', type: 'image/png', purpose: 'any' },
+          { src: {{ 'icon-512.png' | asset_url | json }}, sizes: '512x512', type: 'image/png', purpose: 'any' }
+        ],
+        categories: ['shopping', 'lifestyle']
+      };
+      var blob = new Blob([JSON.stringify(manifest)], { type: 'application/manifest+json' });
+      var link = document.createElement('link');
+      link.rel = 'manifest';
+      link.href = URL.createObjectURL(blob);
+      document.head.appendChild(link);
+    })();
+  </script>
+
+</head>
+
+<body class="template-{{ template.name }}">
+  {% assign tluxe_whatsapp_url = settings.whatsapp_url | strip %}
+  {% assign tluxe_wa_ok = false %}
+  {% if tluxe_whatsapp_url contains 'https://wa.me/' %}
+    {% assign tluxe_wa_ok = true %}
+  {% endif %}
+  {% if tluxe_whatsapp_url contains 'https://api.whatsapp.com/' %}
+    {% assign tluxe_wa_ok = true %}
+  {% endif %}
+  {% unless tluxe_wa_ok %}
+    {% assign tluxe_whatsapp_url = 'https://wa.me/message/LAQBSWXMRUJKD1' %}
+  {% endunless %}
+  {% assign tluxe_nav = linklists['main-menu-1'] %}
+  {% if tluxe_nav.links.size == 0 %}
+    {% assign tluxe_nav = linklists['main-menu'] %}
+  {% endif %}
+
+  <a class="skip-link visually-hidden" href="#main-content">Skip to content</a>
+
+  <!-- ======== ANNOUNCEMENT BAR ======== -->
+  <div
+    style="
+      background:var(--gold);
+      color:#000;
+      text-align:center;
+      padding:8px 16px;
+      font-size:0.7rem;
+      letter-spacing:0.15em;
+      text-transform:uppercase;
+      font-weight:600;
+      position:relative;
+      z-index:200;
+    "
+  >
+    Shipping calculated at checkout &nbsp;|&nbsp;
+    100% Virgin Human Hair &nbsp;|&nbsp;
+    WhatsApp Us Anytime
+  </div>
+
+  <!-- ======== HEADER ======== -->
+  <header id="tluxe-header" role="banner">
+    <div class="container">
+      <div class="header-inner">
+
+        <!-- Logo -->
+        <a
+          href="{{ routes.root_url }}"
+          class="header-logo"
+          aria-label="TLUXE Hairs Home"
+        >
+          {% if settings.logo %}
+            {% assign logo_display_width = settings.logo_width | default: 160 %}
+            {{
+              settings.logo
+              | image_url: width: 320
+              | image_tag:
+                alt: 'TLUXE Hairs',
+                width: logo_display_width,
+                height: 48,
+                loading: 'eager'
+            }}
+          {% else %}
+            <img
+              src="{{ 'tluxe-logo.png' | asset_url }}"
+              alt="TLUXE Hairs"
+              width="160"
+              height="48"
+              loading="eager"
+            >
+          {% endif %}
+        </a>
+
+        <!-- Nav -->
+        <nav class="header-nav" aria-label="Main navigation">
+          {% if tluxe_nav.links.size > 0 %}
+            {% assign seen_nav = '|' %}
+            {% for link in tluxe_nav.links %}
+              {% assign nav_key = link.url | append: '|' %}
+              {% unless seen_nav contains nav_key %}
+                {% assign seen_nav = seen_nav | append: nav_key %}
+                <a href="{{ link.url }}"{% if link.active %} aria-current="page"{% endif %}>{{ link.title | strip | escape }}</a>
+              {% endunless %}
+            {% endfor %}
+          {% else %}
+            <a href="{{ routes.root_url }}">Home</a>
+            <a href="{{ routes.collections_url }}/wigs">Shop Wigs</a>
+            <a href="{{ routes.collections_url }}/new-arrivals">New Arrivals</a>
+            <a href="{{ routes.collections_url }}/best-sellers">Best Sellers</a>
+            <a href="{{ pages.about.url | default: '/pages/about' }}">Our Story</a>
+            <a href="{{ blogs.news.url | default: '/blogs/news' }}">Blog</a>
+            <a href="{{ pages.contact.url | default: '/pages/contact' }}">Contact</a>
+          {% endif %}
+        </nav>
+
+        <!-- Actions -->
+        <div class="header-actions">
+
+          <a
+            class="header-icon"
+            href="{{ routes.search_url }}"
+            aria-label="Search"
+          >
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="11" cy="11" r="7"/>
+              <line x1="16.5" y1="16.5" x2="21" y2="21"/>
+            </svg>
+          </a>
+
+          <details class="account-menu">
+            <summary
+              class="header-icon account-menu__toggle"
+              aria-label="{% if customer %}Account menu{% else %}Sign in menu{% endif %}"
+            >
+              <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/>
+                <circle cx="12" cy="7" r="4"/>
+              </svg>
+            </summary>
+            <div class="account-menu__panel" role="menu">
+              {% if customer %}
+                <a href="{{ routes.account_url }}" role="menuitem">Account</a>
+                <a href="{{ routes.account_url }}" role="menuitem">Orders</a>
+                <a href="{{ routes.account_logout_url }}" role="menuitem">Log out</a>
+              {% else %}
+                <a href="{{ routes.account_login_url }}" role="menuitem">Sign in</a>
+                <a href="{{ routes.account_register_url }}" role="menuitem">Create account</a>
+              {% endif %}
+            </div>
+          </details>
+
+          <button
+            class="header-icon"
+            data-cart-open
+            aria-label="Open shopping bag"
+            type="button"
+          >
+            <svg
+              width="20"
+              height="20"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+              viewBox="0 0 24 24"
+            >
+              <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
+              <line x1="3" y1="6" x2="21" y2="6"/>
+              <path d="M16 10a4 4 0 01-8 0"/>
+            </svg>
+
+            <span
+              class="badge cart-badge"
+              style="display:none;"
+            >
+              0
+            </span>
+          </button>
+
+          <button
+            type="button"
+            id="menu-toggle"
+            class="hamburger"
+            aria-label="Open menu"
+            aria-expanded="false"
+            aria-controls="mobile-menu"
+          >
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
+
+        </div>
+
+      </div>
+    </div>
+  </header>
+
+  <!-- ======== MOBILE MENU ======== -->
+  <nav
+    id="mobile-menu"
+    class="mobile-menu"
+    aria-label="Mobile navigation"
+  >
+    {% if tluxe_nav.links.size > 0 %}
+      {% assign seen_mobile_nav = '|' %}
+      {% for link in tluxe_nav.links %}
+        {% assign mobile_nav_key = link.url | append: '|' %}
+        {% unless seen_mobile_nav contains mobile_nav_key %}
+          {% assign seen_mobile_nav = seen_mobile_nav | append: mobile_nav_key %}
+          <a href="{{ link.url }}"{% if link.active %} aria-current="page"{% endif %}>{{ link.title | strip | escape }}</a>
+        {% endunless %}
+      {% endfor %}
+    {% else %}
+      <a href="{{ routes.root_url }}">Home</a>
+      <a href="{{ routes.collections_url }}/wigs">Shop Wigs</a>
+      <a href="{{ routes.collections_url }}/new-arrivals">New Arrivals</a>
+      <a href="{{ routes.collections_url }}/best-sellers">Best Sellers</a>
+      <a href="{{ pages.about.url | default: '/pages/about' }}">Our Story</a>
+      <a href="{{ blogs.news.url | default: '/blogs/news' }}">Blog</a>
+      <a href="{{ pages.contact.url | default: '/pages/contact' }}">Contact</a>
+    {% endif %}
+    {% if customer %}
+      <a href="{{ routes.account_url }}">Account</a>
+      <a href="{{ routes.account_url }}">Orders</a>
+      <a href="{{ routes.account_logout_url }}">Log out</a>
+    {% else %}
+      <a href="{{ routes.account_login_url }}">Sign in</a>
+      <a href="{{ routes.account_register_url }}">Create account</a>
+    {% endif %}
+  </nav>
+
+  <!-- ======== MAIN ======== -->
+  <main
+    id="main-content"
+    role="main"
+    tabindex="-1"
+  >
+    {{ content_for_layout }}
+  </main>
+
+  <!-- ======== FOOTER ======== -->
+  <footer
+    class="footer"
+    role="contentinfo"
+    style="margin-top:60px;"
+  >
+    <div class="container">
+      <div class="footer-grid">
+
+        <!-- Footer Brand -->
+        <div class="footer-brand">
+
+          <div class="logo">
+            {% if settings.logo %}
+              {{
+                settings.logo
+                | image_url: width: 240
+                | image_tag:
+                  alt: 'TLUXE Hairs',
+                  width: 120,
+                  height: 40,
+                  loading: 'lazy'
+              }}
+            {% else %}
+              <img
+                src="{{ 'tluxe-logo.png' | asset_url }}"
+                alt="TLUXE Hairs"
+                width="120"
+                height="40"
+                loading="lazy"
+              >
+            {% endif %}
+          </div>
+
+          <p>
+            Premium luxury human hair crafted for queens who refuse to settle.
+            Beauty Redefined.
+          </p>
+
+          <div class="social-row">
+
+            <!-- Instagram -->
+            <a
+              href="https://www.instagram.com/tluxe_hairs"
+              class="social-link"
+              aria-label="Instagram"
+              target="_blank"
+              rel="noopener"
+            >
+              <svg
+                width="14"
+                height="14"
+                fill="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 1.366.062 2.633.334 3.608 1.308.975.975 1.246 2.242 1.308 3.608.058 1.266.07 1.646.07 4.85s-.012 3.584-.07 4.85c-.062 1.366-.334 2.633-1.308 3.608-.975.975-2.242 1.246-3.608 1.308-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.79 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+              </svg>
+            </a>
+
+            <!-- WhatsApp -->
+            <a
+              href="{{ tluxe_whatsapp_url | escape }}"
+              class="social-link"
+              aria-label="WhatsApp"
+              target="_blank"
+              rel="noopener"
+            >
+              <svg
+                width="14"
+                height="14"
+                fill="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+                <path d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.122 1.532 5.859L.057 23.514a.75.75 0 00.921.921l5.655-1.475A11.943 11.943 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.943 0-3.772-.502-5.365-1.383l-.386-.22-3.989 1.04 1.041-3.988-.22-.386A9.944 9.944 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/>
+              </svg>
+            </a>
+
+            <!-- Email -->
+            <a
+              href="mailto:tluxehairsenterprises@gmail.com"
+              class="social-link"
+              aria-label="Email"
+            >
+              <svg
+                width="14"
+                height="14"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+              >
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                <polyline points="22,6 12,13 2,6"/>
+              </svg>
+            </a>
+
+            <!-- TikTok -->
+            <a
+              href="https://www.tiktok.com/@tluxe_hairs"
+              class="social-link"
+              aria-label="TikTok"
+              target="_blank"
+              rel="noopener"
+            >
+              <svg
+                width="14"
+                height="14"
+                fill="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path d="M16.6 5.82c-1.02-.88-1.7-2.14-1.85-3.55V2h-3.44v13.6c0 1.7-1.36 3.08-3.05 3.08a3.06 3.06 0 01-3.05-3.08c0-1.7 1.36-3.08 3.05-3.08.31 0 .61.05.9.13v-3.5a6.6 6.6 0 00-.9-.06 6.5 6.5 0 00-6.5 6.51A6.5 6.5 0 008.26 22a6.5 6.5 0 006.5-6.5V9.15a8.16 8.16 0 004.76 1.52V7.24a4.85 4.85 0 01-2.92-1.42z"/>
+              </svg>
+            </a>
+
+            <!-- Facebook -->
+            <a
+              href="https://www.facebook.com/share/17vAo8ZAe8/?mibextid=wwXIfr"
+              class="social-link"
+              aria-label="Facebook"
+              target="_blank"
+              rel="noopener"
+            >
+              <svg
+                width="14"
+                height="14"
+                fill="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 4.99 3.66 9.13 8.44 9.88v-6.99H7.9V12h2.54V9.8c0-2.5 1.49-3.89 3.77-3.89 1.09 0 2.23.2 2.23.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56V12h2.78l-.44 2.89h-2.34v6.99C18.34 21.13 22 16.99 22 12z"/>
+              </svg>
+            </a>
+
+            <!-- Snapchat -->
+            <a
+              href="https://www.snapchat.com/@lily_matt14"
+              class="social-link"
+              aria-label="Snapchat"
+              target="_blank"
+              rel="noopener"
+            >
+              <svg
+                width="14"
+                height="14"
+                fill="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path d="M12.03 2c3.5 0 5.9 2.6 5.9 6.1 0 1.3-.06 2.4-.13 3.28.5.28 1.14.5 1.7.5.4 0 .63.5.36.86-.36.5-1.2 1-2.3 1.36.03.28.1.55.2.8.5 1.24 1.7 1.5 2.4 1.63.3.06.5.34.4.63-.2.66-1.4 1.14-2.9 1.24-.1.3-.2.66-.36 1-.16.34-.5.5-.9.44-.66-.1-1.4-.16-2.06 0-.7.16-1.3.63-2.06 1.1-.8.5-1.7 1.06-2.9 1.06s-2.1-.56-2.9-1.06c-.76-.47-1.36-.94-2.06-1.1-.66-.16-1.4-.1-2.06 0-.4.06-.74-.1-.9-.44-.16-.34-.26-.7-.36-1-1.5-.1-2.7-.58-2.9-1.24-.1-.3.1-.57.4-.63.7-.13 1.9-.4 2.4-1.63.1-.25.17-.52.2-.8-1.1-.36-1.94-.86-2.3-1.36-.27-.36-.04-.86.36-.86.56 0 1.2-.22 1.7-.5-.07-.88-.13-1.98-.13-3.28C6.1 4.6 8.5 2 12.03 2z"/>
+              </svg>
+            </a>
+
+          </div>
+        </div>
+
+        <!-- Shop -->
+        <div class="footer-col">
+          <h5>Shop</h5>
+          <ul>
+            <li>
+              <a href="{{ routes.collections_url }}/wigs">Shop Wigs</a>
+            </li>
+            <li>
+              <a href="{{ routes.all_products_collection_url }}">All Products</a>
+            </li>
+            <li>
+              <a href="{{ routes.collections_url }}/new-arrivals">New Arrivals</a>
+            </li>
+            <li>
+              <a href="{{ routes.collections_url }}/best-sellers">Best Sellers</a>
+            </li>
+            <li>
+              <a href="{{ pages.wishlist.url | default: '/pages/wishlist' }}">Wishlist</a>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Info -->
+        <div class="footer-col">
+          <h5>Info</h5>
+          <ul>
+            <li>
+              <a href="{{ pages.about.url | default: '/pages/about' }}">Our Story</a>
+            </li>
+            <li>
+              <a href="{{ pages['hair-care-guide'].url | default: '/pages/hair-care-guide' }}">Hair Care Guide</a>
+            </li>
+            <li>
+              <a href="{{ pages.faq.url | default: '/pages/faq' }}">FAQ</a>
+            </li>
+            <li>
+              <a href="{{ pages.contact.url | default: '/pages/contact' }}">Contact Us</a>
+            </li>
+            <li>
+              <a href="{{ blogs.news.url | default: '/blogs/news' }}">Blog</a>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Legal -->
+        <div class="footer-col">
+          <h5>Legal</h5>
+          <ul>
+            <li>
+              <a href="{{ shop.privacy_policy.url | default: '/policies/privacy-policy' }}">Privacy Policy</a>
+            </li>
+            <li>
+              <a href="{{ shop.terms_of_service.url | default: '/policies/terms-of-service' }}">Terms of Service</a>
+            </li>
+            <li>
+              <a href="{{ shop.refund_policy.url | default: '/policies/refund-policy' }}">Refund Policy</a>
+            </li>
+            <li>
+              <a href="{{ shop.shipping_policy.url | default: '/policies/shipping-policy' }}">Shipping Policy</a>
+            </li>
+            <li>
+              <a href="{{ pages['shipping-policy'].url | default: pages['shipping-returns'].url | default: shop.shipping_policy.url | default: '/policies/shipping-policy' }}">Shipping &amp; Returns</a>
+            </li>
+            <li>
+              <a href="{{ pages['refund-return-policy'].url | default: '/pages/refund-return-policy' }}">Returns &amp; Cancellations</a>
+            </li>
+          </ul>
+        </div>
+
+      </div>
+
+      <div class="footer-bottom">
+        <p>
+          &copy; {{ 'now' | date: "%Y" }} TLUXE Hairs. All rights reserved.
+        </p>
+
+        <div class="payment-icons">
+          <span class="payment-icon">Secure checkout</span>
+        </div>
+      </div>
+
+    </div>
+  </footer>
+
+  <!-- ======== CART DRAWER ======== -->
+
+  <div
+    class="cart-overlay"
+    id="cart-overlay"
+    aria-hidden="true"
+  ></div>
+
+  <div
+    class="cart-drawer"
+    id="cart-drawer"
+    role="dialog"
+    aria-modal="true"
+    aria-label="Shopping bag"
+  >
+
+    <div class="cart-drawer-header">
+      <h4>Your Bag</h4>
+
+      <button
+        type="button"
+        id="cart-close"
+        class="cart-close"
+        aria-label="Close bag"
+      >
+        <svg
+          width="20"
+          height="20"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.5"
+          viewBox="0 0 24 24"
+        >
+          <line x1="18" y1="6" x2="6" y2="18"/>
+          <line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+
+    <div
+      class="cart-items"
+      id="cart-items"
+    ></div>
+
+    <div class="cart-footer">
+
+      <div class="cart-subtotal">
+        <span>Subtotal</span>
+        <strong id="cart-subtotal-amount">&#8358;0</strong>
+      </div>
+
+      <p class="cart-note">
+        Shipping &amp; taxes calculated at checkout
+      </p>
+
+      <button
+        type="button"
+        class="btn-checkout"
+        id="checkout-btn"
+        disabled
+      >
+        Proceed to Checkout
+
+        <svg
+          width="16"
+          height="16"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          viewBox="0 0 24 24"
+        >
+          <line x1="5" y1="12" x2="19" y2="12"/>
+          <polyline points="12,5 19,12 12,19"/>
+        </svg>
+      </button>
+
+    </div>
+  </div>
+
+  <!-- ======== WHATSAPP (single floating CTA) ======== -->
+  <a
+    href="{{ tluxe_whatsapp_url | escape }}"
+    class="wa-btn"
+    target="_blank"
+    rel="noopener noreferrer"
+    aria-label="Chat with TLUXE on WhatsApp"
+  >
+    <span class="wa-tooltip">Chat with us</span>
+
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="26"
+      height="26"
+      viewBox="0 0 24 24"
+      fill="white"
+      aria-hidden="true"
+    >
+      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+      <path d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.122 1.532 5.859L.057 23.514a.75.75 0 00.921.921l5.655-1.475A11.943 11.943 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.943 0-3.772-.502-5.365-1.383l-.386-.22-3.989 1.04 1.041-3.988-.22-.386A9.944 9.944 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/>
+    </svg>
+  </a>
+
+  <!-- ======== PWA INSTALL BANNER ======== -->
+
+  <div
+    class="pwa-banner"
+    id="pwa-banner"
+    role="region"
+    aria-label="Install app"
+  >
+
+    <div class="pwa-banner-icon">
+      <img
+        src="{{ 'icon-192.png' | asset_url }}"
+        alt="TLUXE Hairs app icon"
+        width="44"
+        height="44"
+      >
+    </div>
+
+    <div class="pwa-banner-text">
+      <strong>Install TLUXE Hairs</strong>
+      <span>Add to your home screen for a better experience</span>
+    </div>
+
+    <div class="pwa-banner-actions">
+      <button
+        type="button"
+        class="pwa-dismiss"
+        id="pwa-dismiss-btn"
+      >
+        Not now
+      </button>
+
+      <button
+        type="button"
+        class="pwa-install"
+        id="pwa-install-btn"
+      >
+        Install
+      </button>
+    </div>
+
+  </div>
+
+  <!-- ======== TOAST ======== -->
+
+  <div
+    class="toast"
+    id="tluxe-toast"
+    role="status"
+    aria-live="polite"
+  ></div>
+
+  <!-- ======== SCRIPTS ======== -->
+
+  <script>
+    document.documentElement.classList.remove('no-js');
+  </script>
+
+  <script
+    src="{{ 'tluxe.js' | asset_url }}"
+    defer
+  ></script>
+
+</body>
+</html>

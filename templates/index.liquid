@@ -1,0 +1,236 @@
+{% comment %} Homepage {% endcomment %}
+
+<!-- ======== HERO ======== -->
+<section class="hero" aria-label="Hero">
+  <div class="hero-bg">
+    {% if settings.hero_image %}
+      {{
+        settings.hero_image
+        | image_url: width: 1920
+        | image_tag:
+          alt: 'TLUXE Hairs — Beauty Redefined',
+          width: 1920,
+          height: 1080,
+          loading: 'eager',
+          fetchpriority: 'high'
+      }}
+    {% else %}
+      <img
+        src="https://cdn.shopify.com/s/files/1/0829/0575/9962/files/tluxe-hero.png?v=1782756311"
+        alt="TLUXE Hairs — Beauty Redefined"
+        width="1920"
+        height="1080"
+        loading="eager"
+        fetchpriority="high"
+      >
+    {% endif %}
+  </div>
+  <div class="hero-overlay"></div>
+  <div class="container">
+    <div class="hero-content">
+      <p class="eyebrow fade-up">Premium Luxury Human Hair</p>
+      <h1 class="fade-up fade-up-d1">
+        Where Every<br>
+        Strand Tells a<br>
+        <em>Royal Story</em>
+      </h1>
+      <p class="fade-up fade-up-d2">
+        Handcrafted luxury wigs for the woman who demands only the finest. 100% virgin human hair, curated for queens.
+      </p>
+      <div class="hero-actions fade-up fade-up-d3">
+        <a href="{{ routes.all_products_collection_url }}" class="btn btn-gold">
+          Shop the Collection
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+            <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12,5 19,12 12,19"/>
+          </svg>
+        </a>
+        <a href="{{ pages.about.url | default: '/pages/about' }}" class="btn btn-outline">Our Story</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======== MARQUEE ======== -->
+<div class="marquee-section" aria-hidden="true">
+  <div class="marquee-track" id="marquee-track">
+    {% assign marquee_items = '100% Virgin Human Hair,Shipping Calculated at Checkout,Glueless Wigs Available,Custom Colour Orders,Premium Quality Guaranteed,WhatsApp Us Anytime,HD Lace Available,100% Virgin Human Hair,Shipping Calculated at Checkout,Glueless Wigs Available,Custom Colour Orders,Premium Quality Guaranteed,WhatsApp Us Anytime,HD Lace Available'
+      | split: ','
+    %}
+    {% for item in marquee_items %}
+      <div class="marquee-item">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+        </svg>
+        {{ item }}
+      </div>
+    {% endfor %}
+  </div>
+</div>
+
+<!-- ======== BEST SELLERS ======== -->
+<section aria-labelledby="bestsellers-heading">
+  <div class="container">
+    <div class="section-header" data-reveal>
+      <p class="eyebrow">Most Loved</p>
+      <h2 id="bestsellers-heading">Best Sellers</h2>
+      <div class="gold-line"></div>
+      <p>The pieces our clients order again and again</p>
+    </div>
+    <div class="product-grid" data-reveal>
+      {% assign bestsellers = collections['best-sellers'].products | default: collections.all.products %}
+
+      {% for product in bestsellers limit: 4 %}
+
+        {% render 'product-card', product: product %}
+      {% endfor %}
+    </div>
+    <div style="text-align:center;margin-top:48px;" data-reveal>
+      <a href="{{ routes.all_products_collection_url }}" class="btn btn-outline">View All Products</a>
+    </div>
+  </div>
+</section>
+
+<!-- ======== BRAND STORY ======== -->
+<section class="brand-story" aria-labelledby="story-heading">
+  <div class="container">
+    <div class="brand-story-inner">
+      <div class="brand-story-media" data-reveal>
+        {% if settings.brand_story_image %}
+          {{
+            settings.brand_story_image
+            | image_url: width: 600
+            | image_tag:
+              alt: 'TLUXE Hairs brand story',
+              width: 600,
+              height: 750,
+              loading: 'lazy'
+          }}
+        {% else %}
+          <img
+            src="https://cdn.shopify.com/s/files/1/0829/0575/9962/files/curly-wig-left-natural.png?v=1782759610"
+            alt="TLUXE Hairs brand story"
+            width="600"
+            height="750"
+            loading="lazy"
+          >
+        {% endif %}
+      </div>
+      <div class="brand-story-text" data-reveal>
+        <p class="eyebrow">Our Story</p>
+        <h2 id="story-heading">Born From a Love of Luxury</h2>
+        <div class="gold-line-left"></div>
+        <p>
+          TLUXE Hairs was built on one belief: every woman deserves hair that makes her feel like royalty. We source
+          only the finest 100% virgin human hair, each wig selected for its exceptional quality, natural lustre, and
+          long-lasting wear.
+        </p>
+        <p>
+          From our signature lace front wigs to our sought-after bone straight units, every piece is crafted with
+          intention. We are not just selling hair — we are delivering a transformation, an experience, a statement.
+        </p>
+        <a href="{{ pages.about.url | default: '/pages/about' }}" class="btn btn-ghost">
+          Read Our Full Story
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+            <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12,5 19,12 12,19"/>
+          </svg>
+        </a>
+        <div class="brand-pillars">
+          <div class="pillar">
+            <div class="pillar-number">100%</div>
+            <div class="pillar-label">Virgin Hair</div>
+          </div>
+          <div class="pillar">
+            <div class="pillar-number">HD</div>
+            <div class="pillar-label">Lace Options</div>
+          </div>
+          <div class="pillar">
+            <div class="pillar-number">NG</div>
+            <div class="pillar-label">Ships from Lagos</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======== NEW ARRIVALS ======== -->
+<section
+  aria-labelledby="new-arrivals-heading"
+  style="background:var(--black-soft);border-top:1px solid var(--black-border);border-bottom:1px solid var(--black-border);"
+>
+  <div class="container">
+    <div class="section-header" data-reveal>
+      <p class="eyebrow">Just Landed</p>
+      <h2 id="new-arrivals-heading">New Arrivals</h2>
+      <div class="gold-line"></div>
+    </div>
+    <div class="product-grid" data-reveal>
+     {% assign new_arrivals = collections['new-arrivals'].products | default: collections.all.products %}
+
+      {% for product in new_arrivals limit: 8 %}
+        {% render 'product-card', product: product, badge: 'New' %}
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- ======== BLOG PREVIEW ======== -->
+<section aria-labelledby="blog-heading" style="background:var(--black-soft);border-top:1px solid var(--black-border);border-bottom:1px solid var(--black-border);">
+  <div class="container">
+    <div class="section-header" data-reveal>
+      <p class="eyebrow">From The Journal</p>
+      <h2 id="blog-heading">Hair Tips & Guides</h2>
+      <div class="gold-line"></div>
+      <p>Expert advice to keep your TLUXE unit looking flawless</p>
+    </div>
+    <div class="product-grid" data-reveal>
+      {% for article in blogs.news.articles limit: 3 %}
+      <article style="background:var(--black-card);border:1px solid var(--black-border);border-radius:2px;overflow:hidden;">
+        <a href="{{ article.url }}">
+          {% if article.image %}
+            <img src="{{ article.image | image_url: width: 600 }}" alt="{{ article.image.alt | escape }}" width="600" height="338" style="width:100%;aspect-ratio:16/9;object-fit:cover;" loading="lazy">
+          {% else %}
+            <div style="width:100%;aspect-ratio:16/9;background:linear-gradient(135deg,var(--black-soft),var(--black-card));display:flex;align-items:center;justify-content:center;">
+              <svg width="48" height="48" fill="none" stroke="var(--gold)" stroke-width="1" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            </div>
+          {% endif %}
+        </a>
+        <div style="padding:20px;">
+          <p class="eyebrow" style="margin-bottom:8px;">{{ article.published_at | date: "%B %d, %Y" }}</p>
+          <h3 style="font-size:1.1rem;margin-bottom:12px;">
+            <a href="{{ article.url }}" style="color:var(--cream);">{{ article.title }}</a>
+          </h3>
+          <p style="color:var(--cream-dim);font-size:0.85rem;line-height:1.7;margin-bottom:16px;">{{ article.excerpt_or_content | strip_html | truncate: 120 }}</p>
+          <a href="{{ article.url }}" style="font-size:0.7rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--gold);">Read More →</a>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+    <div style="text-align:center;margin-top:48px;" data-reveal>
+      <a href="{{ blogs.news.url | default: '/blogs/news' }}" class="btn btn-outline">View All Posts</a>
+    </div>
+  </div>
+</section>
+
+
+<!-- ======== EMAIL SIGNUP ======== -->
+<section class="email-section" aria-labelledby="email-heading">
+  <div class="container">
+    <p class="eyebrow" data-reveal>Join the TLUXE Family</p>
+    <h2 id="email-heading" data-reveal>Be First to Know</h2>
+    <p data-reveal>New arrivals, exclusive offers and hair care tips — straight to your inbox.</p>
+    {% form 'customer', class: 'email-form', id: 'email-signup-form' %}
+      <input type="hidden" name="contact[tags]" value="newsletter">
+      <input
+        class="email-input"
+        type="email"
+        name="contact[email]"
+        placeholder="Your email address"
+        required
+        autocomplete="email"
+        aria-label="Email address"
+      >
+      <button class="email-submit" type="submit">Subscribe</button>
+    {% endform %}
+  </div>
+</section>

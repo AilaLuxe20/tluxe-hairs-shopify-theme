@@ -1,0 +1,31 @@
+{% render 'page-hero', heading: article.title, eyebrow: blog.title, hero_image: settings.banner_blog %}
+
+<div class="container" style="padding-top:60px;padding-bottom:80px;max-width:800px;">
+  <a href="{{ blog.url }}" style="color:var(--gold);font-size:0.7rem;letter-spacing:0.15em;text-transform:uppercase;">← Back to {{ blog.title }}</a>
+
+  <div style="margin-top:40px;">
+    <p class="eyebrow" style="margin-bottom:12px;">{{ article.published_at | date: "%B %d, %Y" }}</p>
+
+    {% if article.image %}
+    <div style="margin-bottom:40px;">
+      <img src="{{ article.image | image_url: width: 1200 }}" alt="{{ article.image.alt | escape }}" width="1200" height="675" style="width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:2px;" loading="lazy">
+    </div>
+    {% endif %}
+
+    <div style="color:var(--cream-dim);line-height:1.9;font-size:1rem;">
+      {{ article.content }}
+    </div>
+
+    {% if article.tags.size > 0 %}
+    <div style="margin-top:40px;padding-top:24px;border-top:1px solid var(--black-border);">
+      {% for tag in article.tags %}
+      <span style="display:inline-block;padding:4px 12px;border:1px solid var(--black-border);font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--cream-dim);margin:4px;">{{ tag }}</span>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <div style="margin-top:48px;text-align:center;">
+      <a href="{{ routes.all_products_collection_url }}" class="btn btn-gold">Shop Our Collection</a>
+    </div>
+  </div>
+</div>

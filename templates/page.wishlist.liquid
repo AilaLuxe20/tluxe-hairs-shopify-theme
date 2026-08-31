@@ -1,0 +1,109 @@
+{% comment %} Wishlist page — rendered client-side from localStorage {% endcomment %}
+
+<div style="padding-top:120px;min-height:60vh;">
+  <div class="container">
+    <div style="text-align:center;margin-bottom:64px;">
+      <p class="eyebrow">Your Saved Items</p>
+      <h1 style="font-family:var(--font-display);font-size:clamp(2rem,4vw,3.5rem);font-weight:300;margin:12px 0;">Wishlist</h1>
+      <div class="gold-line"></div>
+    </div>
+
+    <div id="wishlist-container">
+      <div class="wishlist-empty" id="wishlist-empty" style="display:none;">
+        <svg width="56" height="56" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/>
+        </svg>
+        <h3>Your wishlist is empty</h3>
+        <p>Save the pieces you love and find them here.</p>
+        <a href="{{ routes.all_products_collection_url }}" class="btn btn-gold">Discover Our Collection</a>
+      </div>
+      <div class="product-grid" id="wishlist-grid"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  var wishlist = [];
+  try { wishlist = JSON.parse(localStorage.getItem('tluxe_wishlist') || '[]'); } catch (e) {}
+
+  var grid = document.getElementById('wishlist-grid');
+  var empty = document.getElementById('wishlist-empty');
+  if (!grid || !empty) return;
+
+  function showEmptyIfNeeded() {
+    if (!grid.children.length) {
+      empty.style.display = 'block';
+    }
+  }
+
+  if (!wishlist.length) {
+    empty.style.display = 'block';
+    return;
+  }
+
+  wishlist.forEach(function (item) {
+    var card = document.createElement('article');
+    card.className = 'product-card';
+
+    function safeUrl(url) {
+      if (!url || typeof url !== 'string') return '#';
+      if (url.charAt(0) === '/' && url.charAt(1) !== '/') return url;
+      return '#';
+    }
+    var link = document.createElement('a');
+    link.href = safeUrl(item.url);
+    link.className = 'product-card-media';
+    var img = document.createElement('img');
+    img.src = item.image || '';
+    img.alt = item.title || '';
+    img.loading = 'lazy';
+    link.appendChild(img);
+
+    var btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'wishlist-btn active';
+    btn.setAttribute('data-wishlist-id', item.id || '');
+    btn.setAttribute('data-wishlist-title', item.title || '');
+    btn.setAttribute('data-wishlist-price', item.price || '');
+    btn.setAttribute('data-wishlist-image', item.image || '');
+    btn.setAttribute('data-wishlist-url', item.url || '');
+    btn.setAttribute('aria-label', 'Remove from wishlist');
+    btn.innerHTML = '<svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>';
+
+    var info = document.createElement('div');
+    info.className = 'product-card-info';
+    var titleLink = document.createElement('a');
+    titleLink.href = safeUrl(item.url);
+    var title = document.createElement('h3');
+    title.className = 'product-card-title';
+    title.textContent = item.title || '';
+    titleLink.appendChild(title);
+    var price = document.createElement('div');
+    price.className = 'product-card-price';
+    var cents = Number(item.price);
+    if (window.TLUXE && typeof window.TLUXE.formatMoney === 'function' && !Number.isNaN(cents) && cents > 0) {
+      price.textContent = window.TLUXE.formatMoney(cents);
+    } else if (item.price) {
+      price.textContent = String(item.price);
+    }
+    info.appendChild(titleLink);
+    info.appendChild(price);
+
+    btn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      e.preventDefault();
+      if (window.Wishlist) {
+        window.Wishlist.toggle(item.id, item.title, item.price, item.image, item.url);
+      }
+      card.remove();
+      showEmptyIfNeeded();
+    });
+
+    card.appendChild(link);
+    card.appendChild(btn);
+    card.appendChild(info);
+    grid.appendChild(card);
+  });
+});
+</script>

@@ -1,0 +1,997 @@
+{% comment %} Product page {% endcomment %}
+
+<div class="product-page">
+  <div class="container">
+    <div class="product-layout">
+
+      <!-- ======== GALLERY ======== -->
+      <div class="product-gallery">
+
+        <!-- Mobile swipe carousel -->
+        <div class="gallery-swipe" id="gallery-swipe">
+          {% for image in product.images %}
+            <div class="gallery-slide {% if forloop.first %}active{% endif %}">
+              <img
+                src="{{ image | image_url: width: 900 }}"
+                alt="{{ image.alt | default: product.title | escape }}"
+                width="900"
+                height="1200"
+                loading="{% if forloop.first %}eager{% else %}lazy{% endif %}"
+              >
+            </div>
+          {% endfor %}
+
+          {% for media in product.media %}
+            {% if media.media_type == 'video' %}
+              <div class="gallery-slide">
+                <video
+                  controls
+                  playsinline
+                  muted
+                  loop
+                  style="width:100%;height:100%;object-fit:cover;"
+                >
+                  {% for source in media.sources %}
+                    <source src="{{ source.url }}" type="{{ source.mime_type }}">
+                  {% endfor %}
+                </video>
+              </div>
+            {% endif %}
+          {% endfor %}
+        </div>
+
+        <!-- Swipe dots -->
+        {% assign video_count = 0 %}
+        {% for media in product.media %}
+          {% if media.media_type == 'video' %}
+            {% assign video_count = video_count | plus: 1 %}
+          {% endif %}
+        {% endfor %}
+        {% assign total_media = product.images.size | plus: video_count %}
+
+        {% if total_media > 1 %}
+          <div class="gallery-dots" id="gallery-dots" role="tablist" aria-label="Product media">
+            {% for i in (1..total_media) %}
+              <button
+                type="button"
+                class="gallery-dot {% if forloop.first %}active{% endif %}"
+                data-index="{{ forloop.index0 }}"
+                aria-label="View media {{ forloop.index }}"
+              ></button>
+            {% endfor %}
+          </div>
+        {% endif %}
+
+        <!-- Desktop thumbnails -->
+        {% if product.images.size > 1 %}
+          <div
+            class="gallery-thumbs"
+            role="list"
+            aria-label="Product images"
+          >
+            {% for image in product.images %}
+              <button
+                class="gallery-thumb {% if forloop.first %}active{% endif %}"
+                data-index="{{ forloop.index0 }}"
+                role="listitem"
+                aria-label="View image {{ forloop.index }}"
+                type="button"
+              >
+                <img
+                  src="{{ image | image_url: width: 150 }}"
+                  alt="{{ image.alt | escape }}"
+                  width="72"
+                  height="88"
+                  loading="lazy"
+                >
+              </button>
+            {% endfor %}
+          </div>
+        {% endif %}
+
+      </div>
+
+
+      <!-- ======== PRODUCT INFO ======== -->
+      <div class="product-info-wrap">
+
+        <span class="product-brand">
+          {{ product.vendor | default: 'TLUXE Hairs' }}
+        </span>
+
+        <h1 class="product-title">
+          {{ product.title }}
+        </h1>
+
+        {% if product.metafields.custom.subtitle %}
+          <p class="product-subtitle">
+            {{ product.metafields.custom.subtitle }}
+          </p>
+        {% endif %}
+
+
+        <!-- Rating — Judge.me badge only when real reviews exist -->
+        <div class="product-rating-row">
+
+          <div
+            class="jdgm-widget jdgm-preview-badge"
+            data-id="{{ product.id }}"
+          >
+            {{ product.metafields.judgeme.badge }}
+          </div>
+
+          {% if product.selected_or_first_available_variant.available %}
+            <span class="in-stock" id="product-availability">
+              In Stock
+            </span>
+          {% else %}
+            <span class="in-stock" id="product-availability" style="color:var(--cream-dim);">
+              Sold Out
+            </span>
+          {% endif %}
+
+        </div>
+
+
+        <!-- ======== PRODUCT FORM ======== -->
+
+        <form
+          id="product-form"
+          data-product-id="{{ product.id }}"
+          data-product-title="{{ product.title | escape }}"
+          data-product-price="{{ product.selected_or_first_available_variant.price }}"
+          data-product-image="{{ product.featured_image | image_url: width: 400 }}"
+          data-product-url="{{ product.url }}"
+          method="post"
+          action="{{ routes.cart_add_url }}"
+        >
+
+          <input
+            type="hidden"
+            name="id"
+            id="variant-id"
+            value="{{ product.selected_or_first_available_variant.id }}"
+          >
+
+
+          <!-- ======== VARIANTS ======== -->
+
+          {% unless product.has_only_default_variant %}
+
+            {% for option in product.options_with_values %}
+
+              <div
+                class="variant-group"
+                data-option="{{ option.name | escape }}"
+              >
+
+                <div class="variant-label">
+                  {{ option.name | escape }}
+                  <span data-selected-option="{{ option.name | escape }}"></span>
+                </div>
+
+                <div class="swatch-row" role="group" aria-label="{{ option.name | escape }}">
+
+                  {% for value in option.values %}
+
+                    {% assign value_available = false %}
+                    {% assign value_price = blank %}
+                    {% assign value_variant_id = blank %}
+
+                    {% for variant in product.variants %}
+                      {% if option.position == 1 %}
+                        {% assign matched_option_value = variant.option1 %}
+                      {% elsif option.position == 2 %}
+                        {% assign matched_option_value = variant.option2 %}
+                      {% else %}
+                        {% assign matched_option_value = variant.option3 %}
+                      {% endif %}
+
+                      {% if matched_option_value == value %}
+                        {% if value_variant_id == blank %}
+                          {% assign value_variant_id = variant.id %}
+                          {% assign value_price = variant.price %}
+                        {% endif %}
+                        {% if variant.available %}
+                          {% assign value_available = true %}
+                          {% assign value_variant_id = variant.id %}
+                          {% assign value_price = variant.price %}
+                          {% break %}
+                        {% endif %}
+                      {% endif %}
+                    {% endfor %}
+
+                    {% assign is_selected = false %}
+                    {% if option.selected_value == value %}
+                      {% assign is_selected = true %}
+                    {% endif %}
+
+                    <button
+                      type="button"
+                      class="swatch-btn{% if option.name == 'Length' %} swatch-btn--length{% endif %}{% if is_selected %} selected{% endif %}"
+                      data-value="{{ value | escape }}"
+                      data-available="{{ value_available }}"
+                      {% if product.options.size == 1 and value_variant_id != blank %}
+                        data-variant-id="{{ value_variant_id }}"
+                        data-price="{{ value_price | money }}"
+                      {% endif %}
+                      aria-pressed="{{ is_selected }}"
+                      aria-label="{{ value | escape }}{% unless value_available %} — sold out{% endunless %}"
+                    >
+
+                      {{ value | escape }}
+
+                      {% if option.name == 'Length' and value_price != blank %}
+                        <br>
+                        <small style="font-size:0.65rem;opacity:0.8;">
+                          {{ value_price | money }}
+                        </small>
+                      {% endif %}
+
+                    </button>
+
+                  {% endfor %}
+
+                </div>
+
+              </div>
+
+            {% endfor %}
+
+          {% endunless %}
+
+
+          <!-- ======== PRICE ======== -->
+
+          <div
+            class="product-price-block"
+            style="margin:20px 0 16px;"
+          >
+
+            <div class="product-price">
+              {% if product.selected_or_first_available_variant.compare_at_price > product.selected_or_first_available_variant.price %}
+                <span class="compare-price" id="product-compare-price">
+                  {{ product.selected_or_first_available_variant.compare_at_price | money }}
+                </span>
+              {% else %}
+                <span class="compare-price" id="product-compare-price" hidden></span>
+              {% endif %}
+
+              <span id="product-price">
+                {{ product.selected_or_first_available_variant.price | money }}
+              </span>
+            </div>
+
+          </div>
+
+
+          <!-- ======== QUANTITY + ADD TO CART ======== -->
+
+          <div class="atc-row">
+
+            <div
+              class="qty-selector"
+              role="group"
+              aria-label="Quantity"
+            >
+
+              <button
+                type="button"
+                class="qty-btn qty-minus"
+                aria-label="Decrease quantity"
+              >
+
+                <svg
+                  width="14"
+                  height="14"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  viewBox="0 0 24 24"
+                >
+                  <line
+                    x1="5"
+                    y1="12"
+                    x2="19"
+                    y2="12"
+                  />
+                </svg>
+
+              </button>
+
+
+              <input
+                class="qty-input"
+                type="number"
+                name="quantity"
+                value="1"
+                min="1"
+                aria-label="Quantity"
+                readonly
+              >
+
+
+              <button
+                type="button"
+                class="qty-btn qty-plus"
+                aria-label="Increase quantity"
+              >
+
+                <svg
+                  width="14"
+                  height="14"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  viewBox="0 0 24 24"
+                >
+
+                  <line
+                    x1="5"
+                    y1="12"
+                    x2="19"
+                    y2="12"
+                  />
+
+                  <line
+                    x1="12"
+                    y1="5"
+                    x2="12"
+                    y2="19"
+                  />
+
+                </svg>
+
+              </button>
+
+            </div>
+
+
+            <button
+              type="submit"
+              class="btn-atc"
+              id="btn-atc"
+              {% unless product.selected_or_first_available_variant.available %}disabled{% endunless %}
+            >
+
+              <svg
+                width="18"
+                height="18"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
+
+                <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
+
+                <line
+                  x1="3"
+                  y1="6"
+                  x2="21"
+                  y2="6"
+                />
+
+                <path d="M16 10a4 4 0 01-8 0"/>
+
+              </svg>
+
+              <span id="btn-atc-label">
+                {% if product.selected_or_first_available_variant.available %}
+                  Add to Bag
+                {% else %}
+                  Sold Out
+                {% endif %}
+              </span>
+
+            </button>
+
+          </div>
+
+
+          <!-- ================================================= -->
+          <!-- PAYPAL HOSTED BUTTON (QB5RLQFCC92HY) -->
+          <!-- Disabled by default via show_paypal_hosted_button. -->
+          <!-- Not connected to Shopify variant, quantity, or cart. -->
+          <!-- ================================================= -->
+
+          {% if settings.show_paypal_hosted_button and product.available %}
+
+            <div
+              class="tluxe-paypal-section"
+              style="
+                margin-top:20px;
+                width:100%;
+              "
+            >
+
+              <div
+                id="paypal-container-QB5RLQFCC92HY"
+                style="width:100%;"
+              ></div>
+
+            </div>
+
+          {% endif %}
+
+
+          <!-- ======== WISHLIST ======== -->
+
+          <button
+            type="button"
+            class="btn-wishlist-full"
+            data-wishlist-id="{{ product.id }}"
+            data-wishlist-title="{{ product.title | escape }}"
+            data-wishlist-price="{{ product.selected_or_first_available_variant.price }}"
+            data-wishlist-image="{{ product.featured_image | image_url: width: 400 }}"
+            data-wishlist-url="{{ product.url }}"
+          >
+
+            <svg
+              width="16"
+              height="16"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+              viewBox="0 0 24 24"
+            >
+
+              <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/>
+
+            </svg>
+
+            Save to Wishlist
+
+          </button>
+
+        </form>
+
+
+        <!-- ======== META ======== -->
+
+        <div class="product-meta-row">
+
+          <div class="product-meta-item">
+
+            <svg
+              width="16"
+              height="16"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+              viewBox="0 0 24 24"
+            >
+              <path d="M5 12h14M12 5l7 7-7 7"/>
+            </svg>
+
+            Shipping calculated at checkout
+
+          </div>
+
+
+          <div class="product-meta-item">
+
+            <svg
+              width="16"
+              height="16"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+              viewBox="0 0 24 24"
+            >
+              <polyline points="23 4 23 10 17 10"/>
+              <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+            </svg>
+
+            Easy returns within 7 days
+
+          </div>
+
+
+          <div class="product-meta-item">
+
+            <svg
+              width="16"
+              height="16"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+              viewBox="0 0 24 24"
+            >
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            </svg>
+
+            100% authentic virgin human hair
+
+          </div>
+
+
+          <div class="product-meta-item">
+
+            <svg
+              width="16"
+              height="16"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+              viewBox="0 0 24 24"
+            >
+
+              <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/>
+
+            </svg>
+
+            <a
+              href="{% render 'whatsapp-url' %}"
+              style="color:var(--cream-dim);text-decoration:underline;"
+              target="_blank"
+              rel="noopener"
+            >
+              Chat with us on WhatsApp
+            </a>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- ========================================================= -->
+    <!-- PRODUCT TABS -->
+    <!-- ========================================================= -->
+
+    <div
+      class="product-tabs"
+      data-reveal
+    >
+
+      <div
+        class="tab-nav"
+        role="tablist"
+        aria-label="Product information"
+      >
+
+        <button
+          class="tab-btn active"
+          data-tab="description"
+          id="tab-description"
+          role="tab"
+          aria-selected="true"
+          aria-controls="panel-description"
+          type="button"
+        >
+          Description
+        </button>
+
+        <button
+          class="tab-btn"
+          data-tab="details"
+          id="tab-details"
+          role="tab"
+          aria-selected="false"
+          aria-controls="panel-details"
+          type="button"
+        >
+          Details &amp; Care
+        </button>
+
+        <button
+          class="tab-btn"
+          data-tab="shipping"
+          id="tab-shipping"
+          role="tab"
+          aria-selected="false"
+          aria-controls="panel-shipping"
+          type="button"
+        >
+          Shipping
+        </button>
+
+        <button
+          class="tab-btn"
+          data-tab="reviews"
+          id="tab-reviews"
+          role="tab"
+          aria-selected="false"
+          aria-controls="panel-reviews"
+          type="button"
+        >
+          Reviews
+        </button>
+
+      </div>
+
+
+      <!-- Description -->
+
+      <div
+        class="tab-panel active"
+        data-panel="description"
+        id="panel-description"
+        role="tabpanel"
+        aria-labelledby="tab-description"
+      >
+
+        <div style="max-width:680px;">
+
+          {{ product.description }}
+
+          {% if product.description == blank %}
+
+            <p>
+              Experience the luxury of 100% virgin human hair with our premium
+              {{ product.title }}. Each piece is carefully curated for exceptional
+              quality, natural movement and longevity.
+            </p>
+
+            <p>
+              All our hair can be dyed, bleached, permed and heat-styled just like
+              your natural hair. With proper care, expect 12 months or more of
+              flawless wear.
+            </p>
+
+          {% endif %}
+
+        </div>
+
+      </div>
+
+
+      <!-- Details & Care -->
+
+      <div
+        class="tab-panel"
+        data-panel="details"
+        id="panel-details"
+        role="tabpanel"
+        aria-labelledby="tab-details"
+        hidden
+      >
+
+        <div style="max-width:680px;">
+
+          <p>
+            <strong style="color:var(--cream);">
+              Hair Type:
+            </strong>
+            100% Virgin Human Hair
+          </p>
+
+          <p>
+            <strong style="color:var(--cream);">
+              Texture:
+            </strong>
+            As selected — natural movement, minimal shedding, no tangle
+          </p>
+
+          <p>
+            <strong style="color:var(--cream);">
+              Can be dyed:
+            </strong>
+            Yes — up to 613 blonde
+          </p>
+
+          <p>
+            <strong style="color:var(--cream);">
+              Heat safe:
+            </strong>
+            Yes — up to 230°C
+          </p>
+
+          <p>
+            <strong style="color:var(--cream);">
+              Lice-free:
+            </strong>
+            Yes
+          </p>
+
+          <p>
+            <strong style="color:var(--cream);">
+              Care:
+            </strong>
+            Wash with sulphate-free shampoo and conditioner. Air dry where possible.
+            Store on a wig stand.
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <!-- Shipping -->
+
+      <div
+        class="tab-panel"
+        data-panel="shipping"
+        id="panel-shipping"
+        role="tabpanel"
+        aria-labelledby="tab-shipping"
+        hidden
+      >
+
+        <div style="max-width:680px;">
+
+          <p>
+            <strong style="color:var(--cream);">
+              Nigeria delivery:
+            </strong>
+            Standard, Economy, and Express rates are shown at checkout. There is currently no free-shipping threshold.
+          </p>
+
+          <p>
+            <strong style="color:var(--cream);">
+              International:
+            </strong>
+            Calculated at checkout based on destination.
+          </p>
+
+          <p>
+            <strong style="color:var(--cream);">
+              Returns:
+            </strong>
+            Unworn, unaltered items accepted within 7 days.
+            WhatsApp us to initiate a return.
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <!-- Reviews -->
+
+      <div
+        class="tab-panel"
+        data-panel="reviews"
+        id="panel-reviews"
+        role="tabpanel"
+        aria-labelledby="tab-reviews"
+        hidden
+      >
+
+        <div
+          id="judgeme_product_reviews"
+          class="jdgm-widget jdgm-review-widget"
+          data-id="{{ product.id }}"
+          data-product-title="{{ product.title | escape }}"
+        >
+          {{ product.metafields.judgeme.widget }}
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- ========================================================= -->
+<!-- PAYPAL HOSTED BUTTON SCRIPT (QB5RLQFCC92HY) -->
+<!-- ========================================================= -->
+
+{% if settings.show_paypal_hosted_button %}
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+
+    function renderTLUXEPayPal() {
+      var container = document.getElementById('paypal-container-QB5RLQFCC92HY');
+      if (!container) return;
+      if (typeof paypal === 'undefined' || !paypal.HostedButtons) return false;
+      if (container.dataset.rendered === 'true') return true;
+
+      container.dataset.rendered = 'true';
+      paypal.HostedButtons({
+        hostedButtonId: 'QB5RLQFCC92HY'
+      }).render('#paypal-container-QB5RLQFCC92HY');
+      return true;
+    }
+
+    /* SDK is async — retry briefly without duplicating the script */
+    var attempts = 0;
+    (function waitForPayPal() {
+      if (renderTLUXEPayPal() || attempts >= 40) return;
+      attempts += 1;
+      setTimeout(waitForPayPal, 250);
+    })();
+
+  });
+</script>
+{% endif %}
+
+
+<!-- ========================================================= -->
+<!-- SWIPE JS -->
+<!-- ========================================================= -->
+
+<script>
+(function(){
+
+  const swipe = document.getElementById('gallery-swipe');
+
+  if (!swipe) return;
+
+  const slides = swipe.querySelectorAll('.gallery-slide');
+  const dots = document.querySelectorAll('.gallery-dot');
+  const thumbs = document.querySelectorAll('.gallery-thumb');
+
+  let current = 0;
+  let startX = 0;
+  let isDragging = false;
+
+
+  function goTo(n) {
+
+    if (!slides.length) return;
+
+    if (slides[current]) {
+      slides[current].classList.remove('active');
+    }
+
+    if (dots[current]) {
+      dots[current].classList.remove('active');
+    }
+
+    if (thumbs[current]) {
+      thumbs[current].classList.remove('active');
+    }
+
+    current = (n + slides.length) % slides.length;
+
+    if (slides[current]) {
+      slides[current].classList.add('active');
+    }
+
+    if (dots[current]) {
+      dots[current].classList.add('active');
+    }
+
+    if (thumbs[current]) {
+      thumbs[current].classList.add('active');
+    }
+
+  }
+
+
+  swipe.addEventListener(
+    'touchstart',
+    function(e) {
+
+      startX = e.touches[0].clientX;
+      isDragging = true;
+
+    },
+    {
+      passive: true
+    }
+  );
+
+
+  swipe.addEventListener(
+    'touchend',
+    function(e) {
+
+      if (!isDragging) return;
+
+      const diff =
+        startX -
+        e.changedTouches[0].clientX;
+
+      if (Math.abs(diff) > 40) {
+
+        goTo(
+          diff > 0
+            ? current + 1
+            : current - 1
+        );
+
+      }
+
+      isDragging = false;
+
+    }
+  );
+
+
+  dots.forEach(function(dot) {
+
+    dot.addEventListener(
+      'click',
+      function() {
+
+        goTo(
+          Number(dot.dataset.index)
+        );
+
+      }
+    );
+
+  });
+
+
+  thumbs.forEach(function(thumb) {
+
+    thumb.addEventListener(
+      'click',
+      function() {
+
+        goTo(
+          Number(thumb.dataset.index)
+        );
+
+      }
+    );
+
+  });
+
+  document.addEventListener('keydown', function (e) {
+    if (!slides.length) return;
+    var tag = (e.target && e.target.tagName) || '';
+    if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || (e.target && e.target.isContentEditable)) return;
+    if (e.key === 'ArrowRight') goTo(current + 1);
+    if (e.key === 'ArrowLeft') goTo(current - 1);
+  });
+
+})();
+</script>
+
+
+{% assign seo_variant = product.selected_or_first_available_variant %}
+{% assign seo_price = seo_variant.price | money_without_currency | replace: ',', '' %}
+{% assign seo_image = product.featured_image | image_url: width: 1200 %}
+{% unless seo_image contains 'https:' or seo_image contains 'http:' %}
+  {% assign seo_image = seo_image | prepend: 'https:' %}
+{% endunless %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org/",
+  "@type": "Product",
+  "name": {{ product.title | json }},
+  "url": {{ canonical_url | json }},
+  "image": {{ seo_image | json }},
+  "description": {{ product.description | strip_html | truncate: 200 | json }},
+  "sku": {{ seo_variant.sku | json }},
+  "brand": {
+    "@type": "Brand",
+    "name": {{ product.vendor | default: shop.name | json }}
+  },
+  "offers": {
+    "@type": "Offer",
+    "url": {{ canonical_url | json }},
+    "priceCurrency": {{ cart.currency.iso_code | json }},
+    "price": {{ seo_price | json }},
+    "availability": "https://schema.org/{% if seo_variant.available %}InStock{% else %}OutOfStock{% endif %}",
+    "seller": {
+      "@type": "Organization",
+      "name": {{ shop.name | json }}
+    }
+  }
+}
+</script>
+
+<!-- ========================================================= -->
+<!-- VARIANT DATA -->
+<!-- ========================================================= -->
+
+<script>
+window.TLUXE_VARIANTS = [
+  {% for variant in product.variants %}
+    {
+      id: {{ variant.id | json }},
+      price: {{ variant.price | json }},
+      compare_at_price: {{ variant.compare_at_price | default: 0 | json }},
+      available: {{ variant.available | json }},
+      options: {
+        {% if product.options.size > 0 %}{{ product.options[0] | json }}: {{ variant.option1 | json }}{% endif %}
+        {% if product.options.size > 1 %},{{ product.options[1] | json }}: {{ variant.option2 | json }}{% endif %}
+        {% if product.options.size > 2 %},{{ product.options[2] | json }}: {{ variant.option3 | json }}{% endif %}
+      }
+    }{% unless forloop.last %},{% endunless %}
+  {% endfor %}
+];
+</script>

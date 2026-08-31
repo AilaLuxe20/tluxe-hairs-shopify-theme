@@ -1,0 +1,16 @@
+{% comment %}
+  Sanitized WhatsApp URL. Only wa.me / api.whatsapp.com https links are allowed.
+  Usage: href="{% render 'whatsapp-url' %}"
+{% endcomment %}
+{% assign tluxe_wa = settings.whatsapp_url | strip %}
+{% assign tluxe_wa_ok = false %}
+{% if tluxe_wa contains 'https://wa.me/' %}
+  {% assign tluxe_wa_ok = true %}
+{% endif %}
+{% if tluxe_wa contains 'https://api.whatsapp.com/' %}
+  {% assign tluxe_wa_ok = true %}
+{% endif %}
+{% unless tluxe_wa_ok %}
+  {% assign tluxe_wa = 'https://wa.me/message/LAQBSWXMRUJKD1' %}
+{% endunless %}
+{{- tluxe_wa | escape -}}

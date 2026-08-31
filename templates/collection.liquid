@@ -1,0 +1,68 @@
+{% render 'page-hero', heading: collection.title, eyebrow: 'Shop', subheading: collection.description, hero_image: settings.banner_collections %}
+
+
+{% comment %} Collection page {% endcomment %}
+
+<div style="padding-top:40px;min-height:60vh;">
+  <div class="container">
+
+    <!-- Filter bar -->
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:32px;flex-wrap:wrap;gap:12px;">
+      <span style="font-size:0.72rem;color:var(--cream-dim);letter-spacing:0.1em;">{{ collection.products_count }} Products</span>
+      <div style="display:flex;gap:8px;">
+        {% assign current_sort = collection.sort_by | default: collection.default_sort_by %}
+        <select style="background:var(--black-card);border:1px solid var(--black-border);color:var(--cream-dim);font-family:var(--font-body);font-size:0.72rem;padding:8px 12px;border-radius:1px;outline:none;cursor:pointer;" onchange="window.location.href=this.value" aria-label="Sort by">
+          <option value="?sort_by=manual"{% if current_sort == 'manual' %} selected{% endif %}>Featured</option>
+          <option value="?sort_by=price-ascending"{% if current_sort == 'price-ascending' %} selected{% endif %}>Price: Low to High</option>
+          <option value="?sort_by=price-descending"{% if current_sort == 'price-descending' %} selected{% endif %}>Price: High to Low</option>
+          <option value="?sort_by=created-descending"{% if current_sort == 'created-descending' %} selected{% endif %}>Newest</option>
+          <option value="?sort_by=best-selling"{% if current_sort == 'best-selling' %} selected{% endif %}>Best Selling</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Grid -->
+    {% paginate collection.products by 24 %}
+      {% if collection.products.size > 0 %}
+      <div class="product-grid">
+        {% for product in collection.products %}
+          {% render 'product-card', product: product %}
+        {% endfor %}
+      </div>
+
+      {% if paginate.pages > 1 %}
+      <div style="text-align:center;margin-top:64px;">
+        {{ paginate | default_pagination }}
+      </div>
+      {% endif %}
+
+      {% else %}
+      <div style="text-align:center;padding:80px 0;">
+        <p style="color:var(--cream-dim);margin-bottom:24px;">No products found in this collection yet.</p>
+        <a href="{{ routes.all_products_collection_url }}" class="btn btn-outline">View All Products</a>
+      </div>
+      {% endif %}
+    {% endpaginate %}
+
+  </div>
+</div>
+
+<!-- Grid CSS fix -->
+<style>
+  .product-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+  @media (min-width: 768px) {
+    .product-grid {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+  }
+  @media (min-width: 1200px) {
+    .product-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+</style>

@@ -1,0 +1,79 @@
+{% comment %}
+  Renders a single product card.
+  Usage: {% render 'product-card', product: product, badge: 'New' %}
+{% endcomment %}
+
+{% assign quick_variant = product.selected_or_first_available_variant %}
+{% assign card_badge = badge %}
+{% if quick_variant.compare_at_price > quick_variant.price %}
+  {% assign card_badge = 'Sale' %}
+{% endif %}
+
+<article class="product-card" data-product-id="{{ product.id }}">
+  <div class="product-card-media-wrap">
+    <a href="{{ product.url }}" class="product-card-media" tabindex="-1" aria-hidden="true">
+      {% if product.featured_image %}
+        <img
+          src="{{ product.featured_image | image_url: width: 600 }}"
+          alt="{{ product.featured_image.alt | default: product.title | escape }}"
+          width="600"
+          height="800"
+          loading="lazy"
+        >
+      {% else %}
+        <div style="background:#1a1a1a;width:100%;height:100%;display:flex;align-items:center;justify-content:center;">
+          <svg width="48" height="48" fill="none" stroke="#333" stroke-width="1" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21,15 16,10 5,21"/></svg>
+        </div>
+      {% endif %}
+
+      {% if card_badge != blank %}
+        <div class="product-badge">{{ card_badge }}</div>
+      {% endif %}
+    </a>
+
+    {% if quick_variant and quick_variant.available %}
+      <button
+        type="button"
+        class="card-quick-add"
+        data-quick-add
+        data-variant-id="{{ quick_variant.id }}"
+        aria-label="Quick add {{ product.title | escape }} to bag"
+      >
+        Quick Add
+      </button>
+    {% else %}
+      <a href="{{ product.url }}" class="card-quick-add card-quick-add--view">View</a>
+    {% endif %}
+  </div>
+
+  <button
+    class="wishlist-btn"
+    data-wishlist-id="{{ product.id }}"
+    data-wishlist-title="{{ product.title | escape }}"
+    data-wishlist-price="{{ quick_variant.price }}"
+    data-wishlist-image="{{ product.featured_image | image_url: width: 400 }}"
+    data-wishlist-url="{{ product.url }}"
+    aria-label="Add {{ product.title | escape }} to wishlist"
+    type="button"
+  >
+    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/>
+    </svg>
+  </button>
+
+  <div class="product-card-info">
+    <a href="{{ product.url }}">
+      <h3 class="product-card-title">{{ product.title | escape }}</h3>
+    </a>
+    <p class="product-card-sub">{{ product.type | default: 'Premium Human Hair' | escape }}</p>
+    <div class="product-card-price">
+      {% if quick_variant.compare_at_price > quick_variant.price %}
+        <span class="compare">{{ quick_variant.compare_at_price | money }}</span>
+      {% endif %}
+      {{ quick_variant.price | money }}
+    </div>
+    <div class="jdgm-widget jdgm-preview-badge" data-id="{{ product.id }}">
+      {{ product.metafields.judgeme.badge }}
+    </div>
+  </div>
+</article>

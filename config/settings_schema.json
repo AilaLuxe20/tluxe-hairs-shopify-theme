@@ -1,0 +1,120 @@
+[
+  {
+    "name": "theme_info",
+    "theme_name": "TLUXE Theme Professional",
+    "theme_version": "1.0.0",
+    "theme_author": "TLUXE Hairs",
+    "theme_documentation_url": "https://tluxehairs.shop",
+    "theme_support_url": "https://tluxehairs.shop"
+  },
+  {
+    "name": "Logo",
+    "settings": [
+      {
+        "type": "image_picker",
+        "id": "logo",
+        "label": "Logo image"
+      },
+      {
+        "type": "range",
+        "id": "logo_width",
+        "min": 50,
+        "max": 300,
+        "step": 10,
+        "default": 160,
+        "unit": "px",
+        "label": "Logo width"
+      }
+    ]
+  },
+  {
+    "name": "Homepage",
+    "settings": [
+      {
+        "type": "image_picker",
+        "id": "hero_image",
+        "label": "Hero background image"
+      },
+      {
+        "type": "image_picker",
+        "id": "brand_story_image",
+        "label": "Brand story / Our Story image"
+      }
+    ]
+  },
+  {
+    "name": "Page Banners",
+    "settings": [
+      {
+        "type": "image_picker",
+        "id": "banner_pages",
+        "label": "Default page banner (FAQ, Contact, etc.)"
+      },
+      {
+        "type": "image_picker",
+        "id": "banner_collections",
+        "label": "Default collection banner"
+      },
+      {
+        "type": "image_picker",
+        "id": "banner_blog",
+        "label": "Blog banner"
+      },
+      {
+        "type": "image_picker",
+        "id": "banner_about",
+        "label": "Our Story page banner"
+      },
+      {
+        "type": "image_picker",
+        "id": "banner_contact",
+        "label": "Contact Us page banner"
+      },
+      {
+        "type": "image_picker",
+        "id": "banner_faq",
+        "label": "FAQ page banner"
+      },
+      {
+        "type": "image_picker",
+        "id": "banner_hair_care",
+        "label": "Hair Care Guide page banner"
+      },
+      {
+        "type": "image_picker",
+        "id": "banner_wishlist",
+        "label": "Wishlist page banner"
+      }
+    ]
+  },
+  {
+    "name": "Social & SEO",
+    "settings": [
+      {
+        "type": "image_picker",
+        "id": "og_image",
+        "label": "Default social share image (OG image)"
+      },
+      {
+        "type": "text",
+        "id": "whatsapp_url",
+        "label": "WhatsApp link",
+        "info": "Full WhatsApp URL (wa.me message link or https://wa.me/234XXXXXXXXXX). Do not invent a number — confirm the Nigerian business WhatsApp first. Default keeps the current message link.",
+        "default": "https://wa.me/message/LAQBSWXMRUJKD1"
+      },
+      {
+        "type": "text",
+        "id": "whatsapp_display_label",
+        "label": "WhatsApp display label (optional)",
+        "info": "Optional customer-facing label on the Contact page (e.g. phone display). Leave blank until the correct Nigerian number is confirmed."
+      },
+      {
+        "type": "checkbox",
+        "id": "show_paypal_hosted_button",
+        "label": "Show PayPal Hosted Button on product pages",
+        "info": "Off by default. When on, renders the existing PayPal Hosted Button (QB5RLQFCC92HY) on product pages only. This button is not connected to Shopify variants, quantity, or cart totals. Shopify Checkout remains the primary checkout.",
+        "default": false
+      }
+    ]
+  }
+]

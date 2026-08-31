@@ -1,0 +1,25 @@
+{% assign hero_src = '' %}
+{% if hero_image %}
+  {% assign hero_src = hero_image | image_url: width: 1920 %}
+{% elsif settings.banner_pages %}
+  {% assign hero_src = settings.banner_pages | image_url: width: 1920 %}
+{% endif %}
+
+<section class="page-hero" style="position:relative;height:380px;display:flex;align-items:center;justify-content:center;overflow:hidden;">
+  {% if hero_src != '' %}
+  <div style="position:absolute;inset:0;">
+    <img src="{{ hero_src }}" alt="{{ heading | escape }}" width="1920" height="380" style="width:100%;height:100%;object-fit:cover;object-position:center center;" loading="eager">
+  </div>
+  {% else %}
+  <div style="position:absolute;inset:0;background:linear-gradient(135deg,#0a0a0a 0%,#1a1a1a 100%);"></div>
+  {% endif %}
+  <div style="position:absolute;inset:0;background:linear-gradient(to bottom,rgba(0,0,0,0.4),rgba(0,0,0,0.75));"></div>
+  <div style="position:relative;z-index:2;text-align:center;padding:0 20px;max-width:800px;">
+    <p class="eyebrow" style="margin-bottom:12px;">{{ eyebrow | default: 'TLUXE Hairs' }}</p>
+    <h1 style="font-size:clamp(1.4rem,3vw,2.2rem);margin-bottom:{% if subheading %}16px{% else %}0{% endif %};">{{ heading }}</h1>
+    {% if subheading %}
+    <div class="gold-line" style="margin:0 auto 16px;"></div>
+    <p style="color:var(--cream-dim);max-width:500px;margin-left:auto;margin-right:auto;">{{ subheading }}</p>
+    {% endif %}
+  </div>
+</section>

@@ -1,0 +1,68 @@
+{% comment %} About / Our Story page {% endcomment %}
+
+<div style="padding-top:100px;">
+
+  <!-- Hero -->
+  <div style="position:relative;min-height:50vh;display:flex;align-items:center;overflow:hidden;background:var(--black-soft);">
+    <div style="position:absolute;inset:0;background:linear-gradient(135deg,rgba(201,168,76,0.05),transparent);"></div>
+    <div class="container" style="position:relative;z-index:1;padding-top:60px;padding-bottom:60px;">
+      <p class="eyebrow" data-reveal>Beauty Redefined</p>
+      <h1 style="font-family:var(--font-display);font-size:clamp(2.5rem,6vw,5rem);font-weight:300;margin:16px 0;" data-reveal>Our Story</h1>
+      <div class="gold-line-left" data-reveal></div>
+      <p style="color:var(--cream-dim);max-width:540px;line-height:1.9;margin-top:20px;" data-reveal>
+        TLUXE Hairs was born from a vision — to bring world-class luxury hair to every woman who deserves to feel extraordinary.
+      </p>
+    </div>
+  </div>
+
+  <!-- Story Body -->
+  <section>
+    <div class="container">
+      <div style="display:grid;grid-template-columns:1fr;gap:64px;max-width:900px;margin:0 auto;">
+
+        <div data-reveal>
+          <p class="eyebrow" style="margin-bottom:16px;">Who We Are</p>
+          <h2 style="font-family:var(--font-display);font-size:clamp(1.8rem,3vw,2.8rem);font-weight:400;margin-bottom:24px;">Crafted for Queens</h2>
+          <div class="gold-line-left"></div>
+          <p style="color:var(--cream-dim);line-height:1.9;margin-top:20px;">
+            TLUXE Hairs is a premium hair brand built on an unwavering commitment to quality. Every single product in our collection has been carefully selected, tested and curated. We work with the finest suppliers to ensure that what you receive is 100% virgin human hair — soft, natural, long-lasting and beautiful.
+          </p>
+          <p style="color:var(--cream-dim);line-height:1.9;margin-top:16px;">
+            We believe luxury is not a privilege — it is a standard. From the moment you place your order to the moment your hair arrives, every step of your TLUXE experience is designed to feel exceptional.
+          </p>
+        </div>
+
+        <div data-reveal>
+          <p class="eyebrow" style="margin-bottom:16px;">Our Promise</p>
+          <h2 style="font-family:var(--font-display);font-size:clamp(1.8rem,3vw,2.8rem);font-weight:400;margin-bottom:24px;">Quality You Can Feel</h2>
+          <div class="gold-line-left"></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:32px;">
+            {% assign promises = "100% Virgin Human Hair|Every wig is crafted from authentic, unprocessed and chemical-free hair.,Minimal Shedding|Our hair is double weft for minimal shedding and maximum longevity.,Heat Safe|Style freely up to 230 degrees C without damage.,Lasting Wear|With proper care expect 12 months or more of beautiful hair." | split: "," %}
+            {% for promise in promises %}
+              {% assign parts = promise | split: "|" %}
+              <div style="padding:24px;background:var(--black-card);border:1px solid var(--black-border);border-radius:2px;">
+                <div style="color:var(--gold);font-size:0.65rem;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;margin-bottom:10px;">{{ parts[0] }}</div>
+                <p style="color:var(--cream-dim);font-size:0.85rem;line-height:1.7;">{{ parts[1] }}</p>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section style="background:var(--black-soft);border-top:1px solid var(--black-border);text-align:center;">
+    <div class="container">
+      <p class="eyebrow" data-reveal style="margin-bottom:16px;">Ready to Transform?</p>
+      <h2 style="font-family:var(--font-display);font-size:clamp(2rem,4vw,3rem);font-weight:400;margin-bottom:24px;" data-reveal>Shop the Collection</h2>
+      <div class="gold-line" data-reveal></div>
+      <div style="margin-top:36px;" data-reveal>
+        <a href="{{ routes.all_products_collection_url }}" class="btn btn-gold" style="margin-right:16px;">Shop Now</a>
+        <a href="{% render 'whatsapp-url' %}" class="btn btn-outline" target="_blank" rel="noopener">WhatsApp Us</a>
+      </div>
+    </div>
+  </section>
+
+</div>

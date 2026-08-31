@@ -1,0 +1,35 @@
+{% comment %} Collections index {% endcomment %}
+<div style="padding-top:120px;min-height:60vh;">
+  <div class="container">
+    <div style="text-align:center;margin-bottom:48px;">
+      <p class="eyebrow">Shop</p>
+      <h1 style="font-family:var(--font-display);font-size:clamp(2rem,4vw,3rem);font-weight:300;margin:12px 0;">Collections</h1>
+      <div class="gold-line"></div>
+    </div>
+    <div class="product-grid">
+      {% for collection in collections %}
+        {% unless collection.handle == 'frontpage' %}
+          <article class="product-card">
+            <a href="{{ collection.url }}" class="product-card-media">
+              {% if collection.featured_image %}
+                <img
+                  src="{{ collection.featured_image | image_url: width: 600 }}"
+                  alt="{{ collection.title | escape }}"
+                  width="600"
+                  height="800"
+                  loading="lazy"
+                >
+              {% endif %}
+            </a>
+            <div class="product-card-info">
+              <a href="{{ collection.url }}">
+                <h3 class="product-card-title">{{ collection.title | escape }}</h3>
+              </a>
+              <p class="product-card-sub">{{ collection.products_count }} products</p>
+            </div>
+          </article>
+        {% endunless %}
+      {% endfor %}
+    </div>
+  </div>
+</div>
