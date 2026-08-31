@@ -25,8 +25,9 @@ This repository is source control for the theme. It is not the live Shopify depl
 | Judge.me review hooks | Implemented; no store reviews yet |
 | PayPal Hosted Button (existing ID, gated off) | Implemented, **disabled** |
 | Nigeria shipping rates in Shopify Admin | Configured; theme copy aligned |
-| Card / Paystack / Flutterwave / Shopify PayPal as checkout methods | **Not yet verified** — requires Shopify Admin payment setup |
-| Lagos address + shipping-rate picker in hosted checkout | **Not yet verified** in a browser session |
+| Checkout payment methods (from Checkout payload) | Paystack, ONERWAY (Direct), Bank Deposit, PayPal Express appear as available lines — **no test payment completed** |
+| Flutterwave | Not present in Checkout payload |
+| Lagos address + shipping-rate picker in hosted checkout | **Not yet verified** in a filled browser session |
 | Gift card template | Implemented |
 | Header and mobile search forms | Implemented |
 | Theme Check GitHub Action | Replaced by Theme CI (Liquid Theme Check + static validation) |
@@ -106,7 +107,7 @@ The customer domain is **tluxehairs.shop**. Theme CLI development uses the shop�
 - Theme does not collect card or bank details
 - Checkout handoff has been confirmed (HTTP 302 to Shopify Checkout on the development preview)
 
-Payment methods shown *inside* Checkout depend on **Settings → Payments**. Those providers have not been verified in this project.
+Payment methods shown *inside* Checkout depend on **Settings → Payments**. A development Checkout session listed Paystack, ONERWAY (Direct), Bank Deposit, and PayPal Express as available lines. No test payment was completed. Flutterwave was not listed. The theme Hosted PayPal button stays disabled so it does not compete with Shopify Checkout.
 
 ### Search
 
@@ -264,7 +265,7 @@ There is no `sections/` directory.
 
 ## Known limitations
 
-- **Payments** in Checkout are not verified. Do not list cards, Paystack, Flutterwave, or PayPal as working store methods until Admin Payments is configured and tested.
+- **Payments** appear in Checkout (Paystack, ONERWAY, Bank Deposit, PayPal Express) but no test order has been paid. Do not treat them as production-proven until a test/live transaction succeeds. Flutterwave is not listed.
 - **Hosted PayPal button** is a parallel path and stays disabled for normal catalog checkout.
 - **Nigeria market** in Admin still uses a legacy handle (`ae`). Account and checkout sessions can show `region_country=AE` / `en-ae`. That is Admin markets, not theme routing.
 - **Navigation** comes from Shopify `main-menu-1` (fallback `main-menu`). The live menu is long; the theme wraps it and skips duplicate URLs.
