@@ -28,6 +28,11 @@ function fail(message) {
   failures.push(message);
 }
 
+function parseThemeJson(text) {
+  const cleaned = String(text).replace(/^\uFEFF/, '').replace(/^\s*\/\*[\s\S]*?\*\/\s*/, '');
+  return JSON.parse(cleaned);
+}
+
 function mustExist(relativePath) {
   if (!fs.existsSync(path.join(ROOT, relativePath))) {
     fail('missing required file: ' + relativePath);
@@ -71,7 +76,7 @@ const files = walk(ROOT, []);
 const jsonFiles = files.filter((file) => file.endsWith('.json'));
 for (const file of jsonFiles) {
   try {
-    JSON.parse(fs.readFileSync(file, 'utf8'));
+    parseThemeJson(fs.readFileSync(file, 'utf8'));
   } catch (error) {
     fail('invalid JSON ' + rel(file) + ': ' + error.message);
   }
