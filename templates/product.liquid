@@ -216,6 +216,7 @@
                         data-price="{{ value_price | money }}"
                       {% endif %}
                       aria-pressed="{{ is_selected }}"
+                      {% unless value_available %}aria-disabled="true"{% endunless %}
                       aria-label="{{ value | escape }}{% unless value_available %} — sold out{% endunless %}"
                     >
 

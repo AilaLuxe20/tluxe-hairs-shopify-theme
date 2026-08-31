@@ -25,9 +25,10 @@ This repository is source control for the theme. It is not the live Shopify depl
 | Judge.me review hooks | Implemented; no store reviews yet |
 | PayPal Hosted Button (existing ID, gated off) | Implemented, **disabled** |
 | Nigeria shipping rates in Shopify Admin | Configured; theme copy aligned |
+| Nigeria + US shipping quotes for a real cart | Verified via Shopify Ajax `/cart/shipping_rates.json` (same engine Checkout uses) |
 | Checkout payment methods (from Checkout payload) | Paystack, ONERWAY (Direct), Bank Deposit, PayPal Express appear as available lines — **no test payment completed** |
 | Flutterwave | Not present in Checkout payload |
-| Lagos address + shipping-rate picker in hosted checkout | **Not yet verified** in a filled browser session |
+| Lagos address + shipping-rate picker in hosted checkout | Rates confirmed for Lagos/Nigeria and a US address; a filled Checkout UI session was not completed |
 | Gift card template | Implemented |
 | Header and mobile search forms | Implemented |
 | Theme Check GitHub Action | Replaced by Theme CI (Liquid Theme Check + static validation) |
@@ -154,7 +155,7 @@ This is not an offline store.
 
 ### Shipping
 
-Shopify Admin (default General delivery profile, Lagos location) currently includes a **Nigeria** zone:
+Shopify Admin (default General delivery profile, Lagos location) currently includes a **Nigeria** zone. Shopify’s Ajax shipping-rate API returned these quotes for a real RINA cart with a Lagos address:
 
 | Method | Rate |
 | --- | --- |
@@ -162,9 +163,9 @@ Shopify Admin (default General delivery profile, Lagos location) currently inclu
 | Economy | ₦40,000 |
 | Express | ₦55,000 |
 
-International rates on that profile are separate and are calculated at checkout. Theme copy states that shipping is calculated at checkout. There is **no** free-shipping threshold in Admin.
+The same cart with a New York address returned international Standard ₦45,000 / Economy ₦55,000 / Express ₦75,000. Theme copy states that shipping is calculated at checkout. There is **no** free-shipping threshold in Admin.
 
-A second non-default profile still lists some countries including Nigeria. Catalog products use the default profile.
+A second non-default **Rest of World** profile still lists Nigeria, Canada, UAE, and the United States at Nigeria domestic rates, but it has **no products assigned**. Catalog products use the default profile. Do not delete that profile without owner approval.
 
 ### Reviews (Judge.me)
 
@@ -222,10 +223,12 @@ Shopify Theme Check reports `RemoteAsset` warnings for Google Fonts and the gate
 | `/pages/shipping-returns` | 404 — no page has that handle; theme links do not use it |
 | Hero file `curly-wig-back-no-watermark.png` | Present on Shopify Files/CDN (HTTP 200); earlier CLI proxy 502 was transient |
 | Add to cart (multiple products / correct variant IDs) | 200, currency NGN |
-| Checkout handoff | 302 to Shopify Checkout with the development preview theme |
-| Customer account URLs | 302 to New Customer Accounts |
+| Checkout handoff | 302 to Shopify Checkout (`en-ng`) with the development preview theme |
+| Lagos shipping quotes | Standard ₦25,000 / Economy ₦40,000 / Express ₦55,000 |
+| US shipping quotes | Standard ₦45,000 / Economy ₦55,000 / Express ₦75,000 |
+| Customer account URLs | 302 to New Customer Accounts (`region_country=AE`) |
 
-A full Lagos checkout (address form + visible shipping rates + payment) was **not** completed. No real payment was taken.
+A filled hosted Checkout address form (browser UI) was **not** completed. No real payment was taken.
 
 ---
 
@@ -268,7 +271,7 @@ There is no `sections/` directory.
 
 - **Payments** appear in Checkout (Paystack, ONERWAY, Bank Deposit, PayPal Express) but no test order has been paid. Do not treat them as production-proven until a test/live transaction succeeds. Flutterwave is not listed.
 - **Hosted PayPal button** is a parallel path and stays disabled for normal catalog checkout.
-- **Nigeria market** in Admin still uses a legacy handle (`ae`). Account and checkout sessions can show `region_country=AE` / `en-ae`. That is Admin markets, not theme routing.
+- **Nigeria market** in Admin is named Nigeria but still uses legacy handle `ae`. Account login can still redirect with `region_country=AE`. Checkout handoff in this pass used `en-ng`. The country Nigeria currently sits on the primary **Rest of World** market. Do not rename the handle alone — that does not move Nigeria.
 - **Navigation** comes from Shopify `main-menu-1` (fallback `main-menu`). The live menu is long; the theme wraps it and skips duplicate URLs.
 - **Sold-out variants** are blocked in the theme UI. Shopify `/cart/add.js` may still accept a crafted request for a DENY/zero-inventory variant; Checkout can refuse it later.
 - **Judge.me** will look empty until customers leave real reviews.

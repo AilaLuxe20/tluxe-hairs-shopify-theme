@@ -1090,6 +1090,7 @@ textarea:focus-visible {
 }
 .swatch-btn.unavailable { opacity: 0.35; pointer-events: none; text-decoration: line-through; }
 .swatch-btn[data-available="false"] { opacity: 0.45; }
+.jdgm-prev-badge[data-number-of-reviews="0"] { display: none !important; }
 .swatch-btn--length {
   min-width: 60px;
   height: auto;
@@ -1776,6 +1777,7 @@ body:has(.pwa-banner.show) .wa-btn {
 .product-card [class*="swym"] button,
 .product-card [data-swym-add-to-wishlist],
 .product-card [class*="wishlist-app"],
+.product-card [class*="vtls-wishlist"],
 .product-card .product-card-media ~ button:not(.wishlist-btn) {
   display: none !important;
 }

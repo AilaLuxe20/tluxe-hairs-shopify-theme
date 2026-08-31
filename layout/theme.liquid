@@ -7,8 +7,13 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
   <title>
-    {{ page_title | truncate: 55 }}
-    {% unless page_title contains shop.name %} — {{ shop.name }}{% endunless %}
+    {%- assign tluxe_title = page_title | strip -%}
+    {{ tluxe_title | truncate: 55 | escape }}
+    {%- assign tluxe_title_check = tluxe_title | downcase -%}
+    {%- assign tluxe_shop_check = shop.name | downcase -%}
+    {%- unless tluxe_title_check contains tluxe_shop_check or tluxe_title_check contains 'tluxe' -%}
+      — {{ shop.name | escape }}
+    {%- endunless -%}
   </title>
 
   {% if page_description %}
@@ -51,6 +56,24 @@
 
   <!-- Canonical -->
   <link rel="canonical" href="{{ canonical_url }}">
+
+  {% if settings.logo %}
+    {% assign tluxe_org_logo = settings.logo | image_url: width: 400 %}
+    {% unless tluxe_org_logo contains 'https:' or tluxe_org_logo contains 'http:' %}
+      {% assign tluxe_org_logo = tluxe_org_logo | prepend: 'https:' %}
+    {% endunless %}
+  {% else %}
+    {% assign tluxe_org_logo = 'icon-192.png' | asset_url %}
+  {% endif %}
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": {{ shop.name | json }},
+    "url": {{ shop.url | json }},
+    "logo": {{ tluxe_org_logo | json }}
+  }
+  </script>
 
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="{{ 'icon-96.png' | asset_url }}">
