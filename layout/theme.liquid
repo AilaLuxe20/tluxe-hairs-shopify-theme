@@ -127,6 +127,11 @@
   {% unless tluxe_wa_ok %}
     {% assign tluxe_whatsapp_url = 'https://wa.me/message/LAQBSWXMRUJKD1' %}
   {% endunless %}
+  {% assign tluxe_email = shop.email | default: 'tluxehairsenterprises@gmail.com' | strip %}
+  {% assign tluxe_instagram = settings.instagram_url | strip %}
+  {% assign tluxe_tiktok = settings.tiktok_url | strip %}
+  {% assign tluxe_facebook = settings.facebook_url | strip %}
+  {% assign tluxe_snapchat = settings.snapchat_url | strip %}
   {% assign tluxe_nav = linklists['main-menu-1'] %}
   {% if tluxe_nav.links.size == 0 %}
     {% assign tluxe_nav = linklists['main-menu'] %}
@@ -212,16 +217,27 @@
         <!-- Actions -->
         <div class="header-actions">
 
-          <a
-            class="header-icon"
-            href="{{ routes.search_url }}"
-            aria-label="Search"
-          >
-            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true">
-              <circle cx="11" cy="11" r="7"/>
-              <line x1="16.5" y1="16.5" x2="21" y2="21"/>
-            </svg>
-          </a>
+          <details class="header-search">
+            <summary class="header-icon" aria-label="Search">
+              <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true">
+                <circle cx="11" cy="11" r="7"/>
+                <line x1="16.5" y1="16.5" x2="21" y2="21"/>
+              </svg>
+            </summary>
+            <form class="header-search__panel" action="{{ routes.search_url }}" method="get" role="search">
+              <label class="visually-hidden" for="header-search-q">Search products</label>
+              <input
+                id="header-search-q"
+                class="form-input"
+                type="search"
+                name="q"
+                placeholder="Search wigs…"
+                autocomplete="off"
+              >
+              <input type="hidden" name="type" value="product">
+              <button type="submit" class="btn btn-gold">Search</button>
+            </form>
+          </details>
 
           <details class="account-menu">
             <summary
@@ -297,6 +313,19 @@
     class="mobile-menu"
     aria-label="Mobile navigation"
   >
+    <form class="mobile-search" action="{{ routes.search_url }}" method="get" role="search">
+      <label class="visually-hidden" for="mobile-search-q">Search products</label>
+      <input
+        id="mobile-search-q"
+        class="form-input"
+        type="search"
+        name="q"
+        placeholder="Search wigs…"
+        autocomplete="off"
+      >
+      <input type="hidden" name="type" value="product">
+      <button type="submit" class="btn btn-gold">Search</button>
+    </form>
     {% if tluxe_nav.links.size > 0 %}
       {% assign seen_mobile_nav = '|' %}
       {% for link in tluxe_nav.links %}
@@ -375,13 +404,13 @@
 
           <div class="social-row">
 
-            <!-- Instagram -->
+            {% if tluxe_instagram contains 'https://www.instagram.com/' or tluxe_instagram contains 'https://instagram.com/' %}
             <a
-              href="https://www.instagram.com/tluxe_hairs"
+              href="{{ tluxe_instagram | escape }}"
               class="social-link"
               aria-label="Instagram"
               target="_blank"
-              rel="noopener"
+              rel="noopener noreferrer"
             >
               <svg
                 width="14"
@@ -392,6 +421,7 @@
                 <path d="M12 2.163c3.204 0 3.584.012 4.85.07 1.366.062 2.633.334 3.608 1.308.975.975 1.246 2.242 1.308 3.608.058 1.266.07 1.646.07 4.85s-.012 3.584-.07 4.85c-.062 1.366-.334 2.633-1.308 3.608-.975.975-2.242 1.246-3.608 1.308-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.79 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
               </svg>
             </a>
+            {% endif %}
 
             <!-- WhatsApp -->
             <a
@@ -399,7 +429,7 @@
               class="social-link"
               aria-label="WhatsApp"
               target="_blank"
-              rel="noopener"
+              rel="noopener noreferrer"
             >
               <svg
                 width="14"
@@ -414,7 +444,7 @@
 
             <!-- Email -->
             <a
-              href="mailto:tluxehairsenterprises@gmail.com"
+              href="mailto:{{ tluxe_email | escape }}"
               class="social-link"
               aria-label="Email"
             >
@@ -431,13 +461,13 @@
               </svg>
             </a>
 
-            <!-- TikTok -->
+            {% if tluxe_tiktok contains 'https://www.tiktok.com/' or tluxe_tiktok contains 'https://tiktok.com/' %}
             <a
-              href="https://www.tiktok.com/@tluxe_hairs"
+              href="{{ tluxe_tiktok | escape }}"
               class="social-link"
               aria-label="TikTok"
               target="_blank"
-              rel="noopener"
+              rel="noopener noreferrer"
             >
               <svg
                 width="14"
@@ -448,14 +478,15 @@
                 <path d="M16.6 5.82c-1.02-.88-1.7-2.14-1.85-3.55V2h-3.44v13.6c0 1.7-1.36 3.08-3.05 3.08a3.06 3.06 0 01-3.05-3.08c0-1.7 1.36-3.08 3.05-3.08.31 0 .61.05.9.13v-3.5a6.6 6.6 0 00-.9-.06 6.5 6.5 0 00-6.5 6.51A6.5 6.5 0 008.26 22a6.5 6.5 0 006.5-6.5V9.15a8.16 8.16 0 004.76 1.52V7.24a4.85 4.85 0 01-2.92-1.42z"/>
               </svg>
             </a>
+            {% endif %}
 
-            <!-- Facebook -->
+            {% if tluxe_facebook contains 'https://www.facebook.com/' or tluxe_facebook contains 'https://facebook.com/' %}
             <a
-              href="https://www.facebook.com/share/17vAo8ZAe8/?mibextid=wwXIfr"
+              href="{{ tluxe_facebook | escape }}"
               class="social-link"
               aria-label="Facebook"
               target="_blank"
-              rel="noopener"
+              rel="noopener noreferrer"
             >
               <svg
                 width="14"
@@ -466,14 +497,15 @@
                 <path d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 4.99 3.66 9.13 8.44 9.88v-6.99H7.9V12h2.54V9.8c0-2.5 1.49-3.89 3.77-3.89 1.09 0 2.23.2 2.23.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56V12h2.78l-.44 2.89h-2.34v6.99C18.34 21.13 22 16.99 22 12z"/>
               </svg>
             </a>
+            {% endif %}
 
-            <!-- Snapchat -->
+            {% if tluxe_snapchat contains 'https://www.snapchat.com/' or tluxe_snapchat contains 'https://snapchat.com/' %}
             <a
-              href="https://www.snapchat.com/@lily_matt14"
+              href="{{ tluxe_snapchat | escape }}"
               class="social-link"
               aria-label="Snapchat"
               target="_blank"
-              rel="noopener"
+              rel="noopener noreferrer"
             >
               <svg
                 width="14"
@@ -484,6 +516,7 @@
                 <path d="M12.03 2c3.5 0 5.9 2.6 5.9 6.1 0 1.3-.06 2.4-.13 3.28.5.28 1.14.5 1.7.5.4 0 .63.5.36.86-.36.5-1.2 1-2.3 1.36.03.28.1.55.2.8.5 1.24 1.7 1.5 2.4 1.63.3.06.5.34.4.63-.2.66-1.4 1.14-2.9 1.24-.1.3-.2.66-.36 1-.16.34-.5.5-.9.44-.66-.1-1.4-.16-2.06 0-.7.16-1.3.63-2.06 1.1-.8.5-1.7 1.06-2.9 1.06s-2.1-.56-2.9-1.06c-.76-.47-1.36-.94-2.06-1.1-.66-.16-1.4-.1-2.06 0-.4.06-.74-.1-.9-.44-.16-.34-.26-.7-.36-1-1.5-.1-2.7-.58-2.9-1.24-.1-.3.1-.57.4-.63.7-.13 1.9-.4 2.4-1.63.1-.25.17-.52.2-.8-1.1-.36-1.94-.86-2.3-1.36-.27-.36-.04-.86.36-.86.56 0 1.2-.22 1.7-.5-.07-.88-.13-1.98-.13-3.28C6.1 4.6 8.5 2 12.03 2z"/>
               </svg>
             </a>
+            {% endif %}
 
           </div>
         </div>
@@ -546,10 +579,7 @@
               <a href="{{ shop.refund_policy.url | default: '/policies/refund-policy' }}">Refund Policy</a>
             </li>
             <li>
-              <a href="{{ shop.shipping_policy.url | default: '/policies/shipping-policy' }}">Shipping Policy</a>
-            </li>
-            <li>
-              <a href="{{ pages['shipping-policy'].url | default: pages['shipping-returns'].url | default: shop.shipping_policy.url | default: '/policies/shipping-policy' }}">Shipping &amp; Returns</a>
+              <a href="{{ pages['shipping-policy'].url | default: shop.shipping_policy.url | default: '/policies/shipping-policy' }}">Shipping &amp; Returns</a>
             </li>
             <li>
               <a href="{{ pages['refund-return-policy'].url | default: '/pages/refund-return-policy' }}">Returns &amp; Cancellations</a>

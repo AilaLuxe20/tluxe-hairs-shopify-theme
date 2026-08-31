@@ -229,6 +229,198 @@ section { padding: 48px 0; }
   align-items: center;
 }
 .header-icon:hover { color: var(--gold); }
+.header-icon:focus-visible,
+button:focus-visible,
+a:focus-visible,
+summary:focus-visible,
+select:focus-visible,
+input:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 3px;
+}
+
+.header-search { position: relative; }
+.header-search__toggle::-webkit-details-marker,
+.header-search > summary::-webkit-details-marker { display: none; }
+.header-search > summary { list-style: none; cursor: pointer; }
+.header-search__panel {
+  display: none;
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  width: min(320px, calc(100vw - 32px));
+  padding: 12px;
+  background: var(--black-card);
+  border: 1px solid var(--black-border);
+  z-index: 250;
+  gap: 8px;
+}
+.header-search[open] .header-search__panel {
+  display: flex;
+}
+.mobile-search {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+.mobile-search .form-input { flex: 1; }
+.form-status {
+  padding: 16px 18px;
+  border-radius: 2px;
+  margin-bottom: 16px;
+  font-size: 0.85rem;
+}
+.form-status--success {
+  background: rgba(76,175,130,0.1);
+  border: 1px solid #4caf82;
+  color: #4caf82;
+}
+.form-status--error {
+  background: rgba(180,70,70,0.12);
+  border: 1px solid #c46;
+  color: #e8b4b4;
+}
+.collection-sort {
+  background: var(--black-card);
+  border: 1px solid var(--black-border);
+  color: var(--cream-dim);
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  padding: 8px 12px;
+  border-radius: 1px;
+  outline: none;
+  cursor: pointer;
+}
+.cart-status {
+  text-align: center;
+  padding: 60px 0;
+  color: var(--cream-dim);
+  font-size: 0.8rem;
+}
+.cart-empty-link {
+  display: inline-block;
+  margin-top: 20px;
+  color: var(--gold);
+  font-size: 0.72rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+.cart-item-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+.cart-item-qty {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.cart-item-qty button {
+  color: var(--cream-dim);
+  font-size: 1.1rem;
+  line-height: 1;
+  padding: 2px 6px;
+}
+.cart-page-form {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 48px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+.cart-page-row {
+  display: flex;
+  gap: 20px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--black-border);
+}
+.cart-page-img {
+  flex-shrink: 0;
+  width: 100px;
+  height: 120px;
+  overflow: hidden;
+  background: #1a1a1a;
+}
+.cart-page-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.cart-page-details { flex: 1; }
+.cart-page-title {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  color: var(--cream);
+}
+.cart-page-variant {
+  font-size: 0.72rem;
+  color: var(--cream-dim);
+  margin-top: 4px;
+}
+.cart-page-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 12px;
+}
+.cart-page-price { color: var(--gold); font-size: 1rem; }
+.cart-page-qty {
+  width: 60px;
+  background: var(--black-card);
+  border: 1px solid var(--black-border);
+  color: var(--cream);
+  text-align: center;
+  padding: 6px;
+  font-family: var(--font-body);
+}
+.cart-page-remove {
+  display: inline-block;
+  margin-top: 10px;
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--cream-dim);
+}
+.cart-page-summary {
+  background: var(--black-card);
+  border: 1px solid var(--black-border);
+  padding: 32px;
+}
+.cart-page-subtotal {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  color: var(--cream-dim);
+  font-size: 0.8rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.cart-page-subtotal span:last-child {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  color: var(--gold);
+  letter-spacing: 0;
+  text-transform: none;
+}
+.cart-page-note {
+  font-size: 0.72rem;
+  color: var(--cream-dim);
+  margin-bottom: 20px;
+}
+.cart-page-update {
+  width: 100%;
+  justify-content: center;
+  border-bottom: none;
+  font-size: 0.68rem;
+}
+.cart-page-continue {
+  color: var(--gold);
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
 .header-icon .badge {
   position: absolute;
   top: -6px;

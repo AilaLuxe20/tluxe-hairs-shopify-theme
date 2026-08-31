@@ -1,7 +1,7 @@
 {% render 'page-hero', heading: article.title, eyebrow: blog.title, hero_image: settings.banner_blog %}
 
 <div class="container" style="padding-top:60px;padding-bottom:80px;max-width:800px;">
-  <a href="{{ blog.url }}" style="color:var(--gold);font-size:0.7rem;letter-spacing:0.15em;text-transform:uppercase;">← Back to {{ blog.title }}</a>
+  <a href="{{ blog.url }}" style="color:var(--gold);font-size:0.7rem;letter-spacing:0.15em;text-transform:uppercase;">← Back to {{ blog.title | escape }}</a>
 
   <div style="margin-top:40px;">
     <p class="eyebrow" style="margin-bottom:12px;">{{ article.published_at | date: "%B %d, %Y" }}</p>

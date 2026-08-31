@@ -47,12 +47,14 @@ document.addEventListener('DOMContentLoaded', function () {
     card.className = 'product-card';
 
     function safeUrl(url) {
-      if (!url || typeof url !== 'string') return '#';
+      if (!url || typeof url !== 'string') return '';
       if (url.charAt(0) === '/' && url.charAt(1) !== '/') return url;
-      return '#';
+      return '';
     }
+    var productUrl = safeUrl(item.url);
+    if (!productUrl) return;
     var link = document.createElement('a');
-    link.href = safeUrl(item.url);
+    link.href = productUrl;
     link.className = 'product-card-media';
     var img = document.createElement('img');
     img.src = item.image || '';
@@ -69,12 +71,21 @@ document.addEventListener('DOMContentLoaded', function () {
     btn.setAttribute('data-wishlist-image', item.image || '');
     btn.setAttribute('data-wishlist-url', item.url || '');
     btn.setAttribute('aria-label', 'Remove from wishlist');
-    btn.innerHTML = '<svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>';
+    var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.setAttribute('width', '16');
+    svg.setAttribute('height', '16');
+    svg.setAttribute('fill', 'currentColor');
+    svg.setAttribute('viewBox', '0 0 24 24');
+    svg.setAttribute('aria-hidden', 'true');
+    var path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    path.setAttribute('d', 'M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z');
+    svg.appendChild(path);
+    btn.appendChild(svg);
 
     var info = document.createElement('div');
     info.className = 'product-card-info';
     var titleLink = document.createElement('a');
-    titleLink.href = safeUrl(item.url);
+    titleLink.href = productUrl;
     var title = document.createElement('h3');
     title.className = 'product-card-title';
     title.textContent = item.title || '';
@@ -105,5 +116,6 @@ document.addEventListener('DOMContentLoaded', function () {
     card.appendChild(info);
     grid.appendChild(card);
   });
+  showEmptyIfNeeded();
 });
 </script>

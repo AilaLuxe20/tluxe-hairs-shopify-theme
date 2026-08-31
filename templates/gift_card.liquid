@@ -1,0 +1,31 @@
+{% layout none %}
+<!DOCTYPE html>
+<html lang="{{ request.locale.iso_code }}">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex">
+  <title>{{ shop.name }} — Gift card</title>
+  {{ 'tluxe.css' | asset_url | stylesheet_tag }}
+  {{ content_for_header }}
+</head>
+<body>
+  <main class="container" style="min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:80px 20px;">
+    <div style="max-width:420px;">
+      <p class="eyebrow">{{ shop.name | escape }}</p>
+      <h1 style="font-family:var(--font-display);font-size:2rem;font-weight:300;margin:16px 0;">Gift card</h1>
+      <div class="gold-line"></div>
+      {% if gift_card.enabled %}
+        <p style="color:var(--gold);font-family:var(--font-display);font-size:2rem;margin:28px 0 12px;">{{ gift_card.balance | money }}</p>
+        <p style="letter-spacing:0.16em;text-transform:uppercase;color:var(--cream-dim);">{{ gift_card.code | format_code | escape }}</p>
+        {% if gift_card.expired %}
+          <p style="color:var(--cream-dim);margin-top:16px;">This gift card has expired.</p>
+        {% endif %}
+      {% else %}
+        <p style="color:var(--cream-dim);margin-top:24px;">This gift card is not available.</p>
+      {% endif %}
+      <a href="{{ shop.url }}" class="btn btn-gold" style="margin-top:32px;justify-content:center;">Shop TLUXE Hairs</a>
+    </div>
+  </main>
+</body>
+</html>

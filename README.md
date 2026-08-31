@@ -27,6 +27,9 @@ This repository is source control for the theme. It is not the live Shopify depl
 | Nigeria shipping rates in Shopify Admin | Configured; theme copy aligned |
 | Card / Paystack / Flutterwave / Shopify PayPal as checkout methods | **Not yet verified** — requires Shopify Admin payment setup |
 | Lagos address + shipping-rate picker in hosted checkout | **Not yet verified** in a browser session |
+| Gift card template | Implemented |
+| Header and mobile search forms | Implemented |
+| Theme Check GitHub Action | Replaced by Theme CI (Liquid Theme Check + static validation) |
 | Live theme publish | Requires explicit approval — development theme is not the live theme |
 
 ---
@@ -42,7 +45,7 @@ Work already done on this theme and storefront, based on the live catalog and Ad
 - **Shipping copy matches Admin.** Theme no longer promises free shipping over ₦50,000. Nigeria checkout rates exist on the default delivery profile (Standard / Economy / Express).
 - **Reviews are not invented.** Fake review names, scores, and a theme review form were removed. Judge.me widgets render when real reviews exist.
 - **PayPal Hosted Button is isolated.** The existing hosted button is off by default and is documented as a separate PayPal path—not synced to Shopify variant, quantity, cart, tax, or shipping.
-- **Safer storefront JS.** Cart drawer HTML escapes product titles; WhatsApp URLs are allowlisted; the service worker does not cache cart, checkout, or account.
+- **Safer storefront JS.** Cart drawer line items are built with DOM APIs (no product HTML injection); WhatsApp URLs are allowlisted; the service worker does not cache cart, checkout, or account.
 
 ---
 
@@ -180,6 +183,8 @@ The Hosted Button ID is not changed in this repository. A second PayPal SDK is n
 
 Theme WhatsApp links use the theme setting (default: a `wa.me` message link). Only `https://wa.me/` and `https://api.whatsapp.com/` URLs are accepted. No phone number is invented in the theme.
 
+Footer Instagram, TikTok, and Facebook use theme settings (current brand URLs as defaults). Snapchat is omitted until a confirmed business URL is entered in Theme settings → Social & SEO. Contact and footer email use `shop.email`.
+
 ---
 
 ## Security considerations
@@ -234,6 +239,8 @@ shopify theme dev --store=YOUR_STORE.myshopify.com
 
 `theme dev` syncs local files to a **development** theme only. It does not publish the live theme.
 
+GitHub Actions runs **Theme CI** on `main`: Shopify Theme Check plus JSON, JavaScript syntax, practical CSS, secret-pattern, and repository-integrity checks (`scripts/ci-validate.js`). This repository is a Liquid theme, not a Node.js/npm package. There is no `package.json` and no `npm ci` workflow.
+
 Do not run `shopify theme publish` unless the store owner explicitly approves replacing the live theme.
 
 ---
@@ -242,7 +249,9 @@ Do not run `shopify theme publish` unless the store owner explicitly approves re
 
 ```
 layout/theme.liquid          Site chrome, SEO, cart drawer, PWA, WhatsApp
-templates/                   Classic templates (index, product, collection, cart, search, pages, blog, 404, password)
+templates/                   Classic templates (index, product, collection, cart, search, pages, blog, 404, password, gift_card)
+.github/workflows/           Theme CI (not Node/npm CI)
+scripts/ci-validate.js       JSON, JS, CSS, secrets, integrity checks
 snippets/                    product-card, page-hero, whatsapp-url
 assets/                      tluxe.css, tluxe.js, sw.js, icons, leftover static manifest
 config/                      settings_schema.json, settings_data.json, markets.json

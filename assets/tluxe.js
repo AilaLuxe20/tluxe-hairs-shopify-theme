@@ -169,6 +169,23 @@ const CartDrawer = (function () {
     }
   });
 
+  if (drawer) {
+    drawer.addEventListener('keydown', e => {
+      if (e.key !== 'Tab' || !drawer.classList.contains('open')) return;
+      const nodes = drawer.querySelectorAll('a[href], button:not([disabled])');
+      if (!nodes.length) return;
+      const first = nodes[0];
+      const last = nodes[nodes.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    });
+  }
+
   function fetchCart() {
     return fetch('/cart.js', { headers: { Accept: 'application/json' } }).then(r => r.json());
   }
@@ -187,69 +204,127 @@ const CartDrawer = (function () {
     fetchCart().then(apply).catch(() => {});
   }
 
+  function setTextStatus(container, message) {
+    container.replaceChildren();
+    const wrap = document.createElement('div');
+    wrap.className = 'cart-status';
+    wrap.textContent = message;
+    container.appendChild(wrap);
+  }
+
+  function safeCartUrl(url, handle) {
+    if (url && typeof url === 'string' && url.charAt(0) === '/' && url.charAt(1) !== '/') return url;
+    if (handle) return '/products/' + encodeURIComponent(handle);
+    return '/collections/all';
+  }
+
   function renderCart() {
     const itemsEl = document.getElementById('cart-items');
     const subtotalEl = document.getElementById('cart-subtotal-amount');
     if (!itemsEl) return;
 
-    itemsEl.innerHTML =
-      '<div style="text-align:center;padding:60px 0;color:var(--cream-dim);font-size:0.8rem;">Loading your bag...</div>';
+    setTextStatus(itemsEl, 'Loading your bag...');
 
     fetchCart()
       .then(cart => {
         updateBadge(cart);
 
         if (cart.item_count === 0) {
-          const shopUrl = escapeHtml(tluxeRoutes().allProducts || '/collections/all');
-          itemsEl.innerHTML =
-            '<div style="text-align:center;padding:60px 0;">' +
-            '<svg width="48" height="48" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24" style="margin:0 auto 20px;color:var(--gold);opacity:0.4" aria-hidden="true"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>' +
-            '<p style="color:var(--cream-dim);font-size:0.85rem;">Your bag is empty</p>' +
-            '<a href="' + shopUrl + '" style="display:inline-block;margin-top:20px;color:var(--gold);font-size:0.72rem;letter-spacing:0.15em;text-transform:uppercase;">Shop Now</a>' +
-            '</div>';
+          itemsEl.replaceChildren();
+          const wrap = document.createElement('div');
+          wrap.className = 'cart-status';
+          const p = document.createElement('p');
+          p.textContent = 'Your bag is empty';
+          const a = document.createElement('a');
+          a.href = tluxeRoutes().allProducts || '/collections/all';
+          a.className = 'cart-empty-link';
+          a.textContent = 'Shop Now';
+          wrap.appendChild(p);
+          wrap.appendChild(a);
+          itemsEl.appendChild(wrap);
           if (subtotalEl) subtotalEl.textContent = formatMoneyFromCents(0);
           const emptyCheckout = document.getElementById('checkout-btn');
           if (emptyCheckout) emptyCheckout.disabled = true;
           return;
         }
 
-        itemsEl.innerHTML = cart.items
-          .map(item => {
-            const title = escapeHtml(item.product_title);
-            const variant = item.variant_title && item.variant_title !== 'Default Title'
-              ? '<div class="cart-item-variant">' + escapeHtml(item.variant_title) + '</div>'
-              : '';
-            const img = escapeHtml(item.image || '');
-            const url = escapeHtml(item.url || ('/products/' + (item.handle || '')));
-            const key = escapeHtml(item.key);
-            return (
-              '<div class="cart-item">' +
-              '<a href="' + url + '" class="cart-item-img" style="display:block;cursor:pointer;">' +
-              '<img src="' + img + '" alt="' + title + '" loading="lazy">' +
-              '</a>' +
-              '<div class="cart-item-details">' +
-              '<a href="' + url + '" class="cart-item-name" style="display:block;cursor:pointer;">' + title + '</a>' +
-              variant +
-              '<div style="display:flex;align-items:center;justify-content:space-between;margin-top:10px;">' +
-              '<div class="cart-item-price">' + formatMoneyFromCents(item.final_line_price) + '</div>' +
-              '<div style="display:flex;align-items:center;gap:10px;">' +
-              '<button type="button" data-cart-qty="' + key + '" data-qty="' + (item.quantity - 1) + '" style="color:var(--cream-dim);font-size:1.1rem;line-height:1;padding:2px 6px;" aria-label="Decrease">-</button>' +
-              '<span style="font-size:0.85rem;min-width:16px;text-align:center;">' + item.quantity + '</span>' +
-              '<button type="button" data-cart-qty="' + key + '" data-qty="' + (item.quantity + 1) + '" style="color:var(--cream-dim);font-size:1.1rem;line-height:1;padding:2px 6px;" aria-label="Increase">+</button>' +
-              '</div></div>' +
-              '<button type="button" class="cart-item-remove" data-cart-qty="' + key + '" data-qty="0" style="margin-top:8px;font-size:0.65rem;letter-spacing:0.1em;">Remove</button>' +
-              '</div></div>'
-            );
-          })
-          .join('');
+        const frag = document.createDocumentFragment();
+        cart.items.forEach(item => {
+          const row = document.createElement('div');
+          row.className = 'cart-item';
+
+          const imgLink = document.createElement('a');
+          imgLink.href = safeCartUrl(item.url, item.handle);
+          imgLink.className = 'cart-item-img';
+          const img = document.createElement('img');
+          img.src = item.image || '';
+          img.alt = item.product_title || '';
+          img.loading = 'lazy';
+          imgLink.appendChild(img);
+
+          const details = document.createElement('div');
+          details.className = 'cart-item-details';
+          const name = document.createElement('a');
+          name.href = safeCartUrl(item.url, item.handle);
+          name.className = 'cart-item-name';
+          name.textContent = item.product_title || '';
+          details.appendChild(name);
+
+          if (item.variant_title && item.variant_title !== 'Default Title') {
+            const variant = document.createElement('div');
+            variant.className = 'cart-item-variant';
+            variant.textContent = item.variant_title;
+            details.appendChild(variant);
+          }
+
+          const meta = document.createElement('div');
+          meta.className = 'cart-item-meta';
+          const price = document.createElement('div');
+          price.className = 'cart-item-price';
+          price.textContent = formatMoneyFromCents(item.final_line_price);
+          const qtyWrap = document.createElement('div');
+          qtyWrap.className = 'cart-item-qty';
+          const minus = document.createElement('button');
+          minus.type = 'button';
+          minus.setAttribute('data-cart-qty', item.key);
+          minus.setAttribute('data-qty', String(item.quantity - 1));
+          minus.setAttribute('aria-label', 'Decrease');
+          minus.textContent = '-';
+          const qty = document.createElement('span');
+          qty.textContent = String(item.quantity);
+          const plus = document.createElement('button');
+          plus.type = 'button';
+          plus.setAttribute('data-cart-qty', item.key);
+          plus.setAttribute('data-qty', String(item.quantity + 1));
+          plus.setAttribute('aria-label', 'Increase');
+          plus.textContent = '+';
+          qtyWrap.appendChild(minus);
+          qtyWrap.appendChild(qty);
+          qtyWrap.appendChild(plus);
+          meta.appendChild(price);
+          meta.appendChild(qtyWrap);
+          details.appendChild(meta);
+
+          const remove = document.createElement('button');
+          remove.type = 'button';
+          remove.className = 'cart-item-remove';
+          remove.setAttribute('data-cart-qty', item.key);
+          remove.setAttribute('data-qty', '0');
+          remove.textContent = 'Remove';
+          details.appendChild(remove);
+
+          row.appendChild(imgLink);
+          row.appendChild(details);
+          frag.appendChild(row);
+        });
+        itemsEl.replaceChildren(frag);
 
         if (subtotalEl) subtotalEl.textContent = formatMoneyFromCents(cart.total_price);
         const checkoutBtn = document.getElementById('checkout-btn');
         if (checkoutBtn) checkoutBtn.disabled = cart.item_count < 1;
       })
       .catch(() => {
-        itemsEl.innerHTML =
-          '<div style="text-align:center;padding:60px 0;color:var(--cream-dim);font-size:0.8rem;">Could not load your bag. Please refresh the page.</div>';
+        setTextStatus(itemsEl, 'Could not load your bag. Please refresh the page.');
       });
   }
 
@@ -499,20 +574,32 @@ window.Wishlist = Wishlist;
   const tabNav = document.querySelector('.tab-nav');
   if (!tabNav) return;
 
-  tabNav.querySelectorAll('.tab-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const target = btn.dataset.tab;
-      tabNav.querySelectorAll('.tab-btn').forEach(b => {
-        const active = b === btn;
-        b.classList.toggle('active', active);
-        b.setAttribute('aria-selected', active ? 'true' : 'false');
-      });
-      document.querySelectorAll('.tab-panel').forEach(p => {
-        const active = p.dataset.panel === target;
-        p.classList.toggle('active', active);
-        if (active) p.removeAttribute('hidden');
-        else p.setAttribute('hidden', '');
-      });
+  function activateTab(btn) {
+    const target = btn.dataset.tab;
+    tabNav.querySelectorAll('.tab-btn').forEach(b => {
+      const active = b === btn;
+      b.classList.toggle('active', active);
+      b.setAttribute('aria-selected', active ? 'true' : 'false');
+    });
+    document.querySelectorAll('.tab-panel').forEach(p => {
+      const active = p.dataset.panel === target;
+      p.classList.toggle('active', active);
+      if (active) p.removeAttribute('hidden');
+      else p.setAttribute('hidden', '');
+    });
+  }
+
+  const tabButtons = Array.from(tabNav.querySelectorAll('.tab-btn'));
+  tabButtons.forEach((btn, index) => {
+    btn.addEventListener('click', () => activateTab(btn));
+    btn.addEventListener('keydown', e => {
+      if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+      e.preventDefault();
+      const next = e.key === 'ArrowRight'
+        ? tabButtons[(index + 1) % tabButtons.length]
+        : tabButtons[(index - 1 + tabButtons.length) % tabButtons.length];
+      next.focus();
+      activateTab(next);
     });
   });
 })();
@@ -624,11 +711,33 @@ window.showToast = showToast;
   });
 })();
 
-/* ---- ACCOUNT MENU: close on outside click ---- */
+/* ---- ACCOUNT / SEARCH DETAILS ---- */
 (function () {
   document.addEventListener('click', e => {
-    document.querySelectorAll('details.account-menu[open]').forEach(menu => {
+    document.querySelectorAll('details.account-menu[open], details.header-search[open]').forEach(menu => {
       if (!menu.contains(e.target)) menu.removeAttribute('open');
+    });
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key !== 'Escape') return;
+    document.querySelectorAll('details.account-menu[open], details.header-search[open]').forEach(menu => {
+      menu.removeAttribute('open');
+    });
+  });
+  document.querySelectorAll('details.header-search').forEach(panel => {
+    panel.addEventListener('toggle', () => {
+      if (!panel.open) return;
+      const input = panel.querySelector('input[type="search"]');
+      if (input) input.focus();
+    });
+  });
+})();
+
+/* ---- COLLECTION SORT ---- */
+(function () {
+  document.querySelectorAll('[data-auto-submit]').forEach(select => {
+    select.addEventListener('change', () => {
+      if (select.form) select.form.submit();
     });
   });
 })();

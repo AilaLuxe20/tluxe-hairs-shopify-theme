@@ -8,47 +8,52 @@
     </div>
 
     {% if cart.item_count > 0 %}
-   <form action="{{ routes.cart_url }}" method="post" novalidate style="display:grid;grid-template-columns:1fr;gap:48px;max-width:900px;margin:0 auto;">
+    <form action="{{ routes.cart_url }}" method="post" novalidate class="cart-page-form">
 
       {% for item in cart.items %}
-      <div style="display:flex;gap:20px;padding-bottom:24px;border-bottom:1px solid var(--black-border);">
-        <a href="{{ item.url }}" style="flex-shrink:0;width:100px;height:120px;border-radius:2px;overflow:hidden;background:#1a1a1a;">
-        <img src="{{ item.image | image_url: width: 200 }}" alt="{{ item.title | escape }}" width="200" height="267" style="width:100%;height:100%;object-fit:cover;" loading="lazy">
-
+      <div class="cart-page-row">
+        <a href="{{ item.url }}" class="cart-page-img">
+          {% if item.image %}
+            <img src="{{ item.image | image_url: width: 200 }}" alt="{{ item.product.title | escape }}" width="200" height="267" loading="lazy">
+          {% endif %}
         </a>
-        <div style="flex:1;">
-          <a href="{{ item.url }}" style="font-family:var(--font-display);font-size:1.1rem;color:var(--cream);">{{ item.product.title }}</a>
+        <div class="cart-page-details">
+          <a href="{{ item.url }}" class="cart-page-title">{{ item.product.title | escape }}</a>
           {% unless item.variant.title == 'Default Title' %}
-          <div style="font-size:0.72rem;color:var(--cream-dim);margin-top:4px;">{{ item.variant.title }}</div>
+          <div class="cart-page-variant">{{ item.variant.title | escape }}</div>
           {% endunless %}
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-top:12px;">
-            <div style="color:var(--gold);font-size:1rem;">{{ item.line_price | money }}</div>
+          <div class="cart-page-meta">
+            <div class="cart-page-price">{{ item.line_price | money }}</div>
             <label class="visually-hidden" for="updates_{{ item.key }}">Quantity for {{ item.product.title | escape }}</label>
-            <input type="number" name="updates[{{ item.key }}]" id="updates_{{ item.key }}" value="{{ item.quantity }}" min="0" style="width:60px;background:var(--black-card);border:1px solid var(--black-border);color:var(--cream);text-align:center;padding:6px;font-family:var(--font-body);border-radius:1px;">
+            <input type="number" name="updates[{{ item.key }}]" id="updates_{{ item.key }}" value="{{ item.quantity }}" min="0" class="cart-page-qty">
           </div>
+          <a href="{{ item.url_to_remove }}" class="cart-page-remove">Remove</a>
         </div>
       </div>
       {% endfor %}
 
-      <div style="background:var(--black-card);border:1px solid var(--black-border);padding:32px;border-radius:2px;">
-        <div style="display:flex;justify-content:space-between;margin-bottom:16px;">
-          <span style="color:var(--cream-dim);font-size:0.8rem;letter-spacing:0.1em;text-transform:uppercase;">Subtotal</span>
-          <span style="font-family:var(--font-display);font-size:1.4rem;color:var(--gold);">{{ cart.total_price | money }}</span>
+      <div class="cart-page-summary">
+        <div class="cart-page-subtotal">
+          <span>Subtotal</span>
+          <span>{{ cart.total_price | money }}</span>
         </div>
-        <p style="font-size:0.72rem;color:var(--cream-dim);margin-bottom:20px;">Shipping and taxes calculated at checkout</p>
+        <p class="cart-page-note">Shipping and taxes calculated at checkout</p>
         <button type="submit" name="checkout" class="btn-atc" style="border:none;">Proceed to Checkout</button>
         <div style="margin-top:12px;">
-          <button type="submit" name="update" class="btn btn-ghost" style="width:100%;justify-content:center;border-bottom:none;font-size:0.68rem;">Update Cart</button>
+          <button type="submit" name="update" class="btn btn-ghost cart-page-update">Update Cart</button>
+        </div>
+        <div style="margin-top:16px;text-align:center;">
+          <a href="{{ routes.all_products_collection_url }}" class="cart-page-continue">Continue shopping</a>
         </div>
       </div>
     </form>
 
     {% else %}
     <div style="text-align:center;padding:60px 0;">
-      <svg width="56" height="56" fill="none" stroke="var(--gold)" stroke-width="1" viewBox="0 0 24 24" style="margin:0 auto 24px;opacity:0.4;"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+      <svg width="56" height="56" fill="none" stroke="var(--gold)" stroke-width="1" viewBox="0 0 24 24" style="margin:0 auto 24px;opacity:0.4;" aria-hidden="true"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
       <h2 style="font-family:var(--font-display);font-size:2rem;font-weight:300;margin-bottom:16px;">Your bag is empty</h2>
       <p style="color:var(--cream-dim);margin-bottom:32px;">Discover our premium collection and fill your bag with luxury.</p>
-<a href="{{ routes.all_products_collection_url }}" class="btn btn-gold">Shop Now</a>
+      <a href="{{ routes.all_products_collection_url }}" class="btn btn-gold">Shop Now</a>
     </div>
     {% endif %}
   </div>

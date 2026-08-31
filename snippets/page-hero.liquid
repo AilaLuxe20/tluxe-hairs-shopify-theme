@@ -16,7 +16,7 @@
   <div style="position:absolute;inset:0;background:linear-gradient(to bottom,rgba(0,0,0,0.4),rgba(0,0,0,0.75));"></div>
   <div style="position:relative;z-index:2;text-align:center;padding:0 20px;max-width:800px;">
     <p class="eyebrow" style="margin-bottom:12px;">{{ eyebrow | default: 'TLUXE Hairs' }}</p>
-    <h1 style="font-size:clamp(1.4rem,3vw,2.2rem);margin-bottom:{% if subheading %}16px{% else %}0{% endif %};">{{ heading }}</h1>
+    <h1 style="font-size:clamp(1.4rem,3vw,2.2rem);margin-bottom:{% if subheading %}16px{% else %}0{% endif %};">{{ heading | escape }}</h1>
     {% if subheading %}
     <div class="gold-line" style="margin:0 auto 16px;"></div>
     <p style="color:var(--cream-dim);max-width:500px;margin-left:auto;margin-right:auto;">{{ subheading }}</p>

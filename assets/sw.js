@@ -1,7 +1,7 @@
 /* TLUXE PWA service worker — safe, non-aggressive caching
    Never interferes with cart, checkout, account, or payments. */
 
-const CACHE_NAME = 'tluxe-v5-static';
+const CACHE_NAME = 'tluxe-v7-static';
 const STATIC_EXT = /\.(?:css|js|woff2?|ttf|otf|png|jpg|jpeg|webp|gif|svg|ico)(?:\?|$)/i;
 
 self.addEventListener('install', event => {

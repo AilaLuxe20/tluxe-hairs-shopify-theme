@@ -9,6 +9,9 @@
     <div class="gold-line"></div>
   </div>
 
+  {% if blog.articles_count == 0 %}
+    <p style="text-align:center;color:var(--cream-dim);">No journal posts yet.</p>
+  {% endif %}
   <div class="product-grid">
     {% for article in blog.articles %}
     <article style="background:var(--black-card);border:1px solid var(--black-border);border-radius:2px;overflow:hidden;">
@@ -24,7 +27,7 @@
       <div style="padding:20px;">
         <p class="eyebrow" style="margin-bottom:8px;">{{ article.published_at | date: "%B %d, %Y" }}</p>
         <h3 style="font-size:1.1rem;margin-bottom:12px;">
-          <a href="{{ article.url }}" style="color:var(--cream);">{{ article.title }}</a>
+          <a href="{{ article.url }}" style="color:var(--cream);">{{ article.title | escape }}</a>
         </h3>
         <p style="color:var(--cream-dim);font-size:0.85rem;line-height:1.7;margin-bottom:16px;">{{ article.excerpt_or_content | strip_html | truncate: 120 }}</p>
         <a href="{{ article.url }}" style="font-size:0.7rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--gold);">Read More →</a>

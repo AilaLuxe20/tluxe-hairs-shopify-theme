@@ -24,6 +24,10 @@
       </div>
     </form>
 
+    {% unless search.performed %}
+      <p style="text-align:center;color:var(--cream-dim);">Search the collection by name, length, or style.</p>
+    {% endunless %}
+
     {% if search.performed %}
       {% paginate search.results by 24 %}
         {% if search.results_count == 0 %}

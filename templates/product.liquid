@@ -100,7 +100,7 @@
         </span>
 
         <h1 class="product-title">
-          {{ product.title }}
+          {{ product.title | escape }}
         </h1>
 
         {% if product.metafields.custom.subtitle %}
