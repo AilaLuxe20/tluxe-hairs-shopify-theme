@@ -218,11 +218,12 @@ Shopify Theme Check reports `RemoteAsset` warnings for Google Fonts and the gate
 | `shopify theme check` | 0 errors; RemoteAsset warnings on fonts and gated PayPal SDK |
 | `node --check` on `tluxe.js` and `sw.js` | Pass |
 | Homepage, collections, 5 product PDPs, search, cart, wishlist, contact, shipping page | HTTP 200 on development preview |
-| `/pages/shipping-returns` | 404 — the live page handle is `shipping-policy` |
+| `/pages/shipping-policy` | 200 — customer URL; uses the `page.shipping-returns` template |
+| `/pages/shipping-returns` | 404 — no page has that handle; theme links do not use it |
+| Hero file `curly-wig-back-no-watermark.png` | Present on Shopify Files/CDN (HTTP 200); earlier CLI proxy 502 was transient |
 | Add to cart (multiple products / correct variant IDs) | 200, currency NGN |
 | Checkout handoff | 302 to Shopify Checkout with the development preview theme |
 | Customer account URLs | 302 to New Customer Accounts |
-| Hero CDN asset previously reported as a CLI proxy 502 | File exists on Shopify CDN (HTTP 200) |
 
 A full Lagos checkout (address form + visible shipping rates + payment) was **not** completed. No real payment was taken.
 
@@ -269,9 +270,9 @@ There is no `sections/` directory.
 - **Hosted PayPal button** is a parallel path and stays disabled for normal catalog checkout.
 - **Nigeria market** in Admin still uses a legacy handle (`ae`). Account and checkout sessions can show `region_country=AE` / `en-ae`. That is Admin markets, not theme routing.
 - **Navigation** comes from Shopify `main-menu-1` (fallback `main-menu`). The live menu is long; the theme wraps it and skips duplicate URLs.
-- **Sold-out variants** are blocked in the theme UI. Shopify’s cart API may still accept a crafted add request; Checkout can refuse the line later.
+- **Sold-out variants** are blocked in the theme UI. Shopify `/cart/add.js` may still accept a crafted request for a DENY/zero-inventory variant; Checkout can refuse it later.
 - **Judge.me** will look empty until customers leave real reviews.
-- **Wishlist** is device-local unless the separate wishlist app is used.
+- **Wishlist:** the theme list (`localStorage` on `/pages/wishlist`) should be the storefront source of truth. A separate Wishlist app embed can show a second heart. Disable the app embed in the theme editor if you want one control. Do not uninstall the app until that is confirmed.
 - This GitHub remote is **not** what publishes the live shop.
 
 ---
@@ -284,6 +285,8 @@ There is no `sections/` directory.
 4. Publish in Shopify Admin only after owner approval.
 
 `git push` updates this GitHub backup. It does not change [tluxehairs.shop](https://tluxehairs.shop).
+
+This storefront is **not** deployed on Vercel. Shopify Online Store is the host.
 
 ---
 
