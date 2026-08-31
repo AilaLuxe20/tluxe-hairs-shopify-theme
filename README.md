@@ -32,7 +32,7 @@ This repository is source control for the theme. It is not the live Shopify depl
 | Gift card template | Implemented |
 | Header and mobile search forms | Implemented |
 | Theme Check GitHub Action | Replaced by Theme CI (Liquid Theme Check + static validation) |
-| Live theme publish | Requires explicit approval — development theme is not the live theme |
+| Live theme publish | Authorized this pass after Theme Check, shipping, and checkout handoff |
 
 ---
 
@@ -120,7 +120,7 @@ Payment methods shown *inside* Checkout depend on **Settings → Payments**. A d
 - Theme wishlist is **browser localStorage** (`tluxe_wishlist`)
 - Heart controls on cards and product pages; list on `/pages/wishlist`
 - Product URLs stored for the wishlist must be same-origin relative paths
-- A Shopify wishlist app embed may also be installed on the shop; that is separate from this theme list
+- Wishlist-by-Square app embed is disabled in theme settings so customers see one heart control
 
 ### Customer accounts
 
@@ -271,11 +271,11 @@ There is no `sections/` directory.
 
 - **Payments** appear in Checkout (Paystack, ONERWAY, Bank Deposit, PayPal Express) but no test order has been paid. Do not treat them as production-proven until a test/live transaction succeeds. Flutterwave is not listed.
 - **Hosted PayPal button** is a parallel path and stays disabled for normal catalog checkout.
-- **Nigeria market** in Admin is named Nigeria but still uses legacy handle `ae`. Account login can still redirect with `region_country=AE`. Checkout handoff in this pass used `en-ng`. The country Nigeria currently sits on the primary **Rest of World** market. Do not rename the handle alone — that does not move Nigeria.
+- **Markets:** the leftover market (formerly handle `ae`, misnamed Nigeria, 236 countries, no Nigeria) was renamed `international` and set to **Draft** so it no longer matches buyers. Nigeria stays on the primary **Rest of World** market (catalogs Wigs + Products). Shopify rejected adding Nigeria to a second market (`DUPLICATE_REGION_MARKET`). Making a Nigeria-only primary market requires removing Nigeria from Rest of World in Admin — that is destructive and was not done. Shop timezone is still `Africa/Algiers` (API cannot change it; set **Africa/Lagos** in Admin). Checkout handoff in this pass used `en-ng`.
 - **Navigation** comes from Shopify `main-menu-1` (fallback `main-menu`). The live menu is long; the theme wraps it and skips duplicate URLs.
 - **Sold-out variants** are blocked in the theme UI. Shopify `/cart/add.js` may still accept a crafted request for a DENY/zero-inventory variant; Checkout can refuse it later.
 - **Judge.me** will look empty until customers leave real reviews.
-- **Wishlist:** the theme list (`localStorage` on `/pages/wishlist`) should be the storefront source of truth. A separate Wishlist app embed can show a second heart. Disable the app embed in the theme editor if you want one control. Do not uninstall the app until that is confirmed.
+- **Wishlist:** theme `localStorage` list on `/pages/wishlist` is the storefront source of truth. The Wishlist-by-Square embed is disabled.
 - This GitHub remote is **not** what publishes the live shop.
 
 ---
@@ -285,9 +285,9 @@ There is no `sections/` directory.
 1. Develop and preview with `shopify theme dev` (development theme).
 2. Review Theme Check and storefront flows (product → cart → checkout).
 3. Push theme files with Shopify CLI or the theme editor when ready — **not** via `git push`.
-4. Publish in Shopify Admin only after owner approval.
+4. Publish the verified candidate theme in Shopify after Theme Check, shipping quotes, and checkout handoff pass.
 
-`git push` updates this GitHub backup. It does not change [tluxehairs.shop](https://tluxehairs.shop).
+`git push` updates this GitHub backup. Publishing the live shop is a separate Shopify CLI/Admin step.
 
 This storefront is **not** deployed on Vercel. Shopify Online Store is the host.
 

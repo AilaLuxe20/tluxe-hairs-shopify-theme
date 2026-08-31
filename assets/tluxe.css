@@ -227,6 +227,9 @@ section { padding: 48px 0; }
   transition: color 0.25s;
   display: flex;
   align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
 }
 .header-icon:hover { color: var(--gold); }
 .header-icon:focus-visible,
@@ -473,8 +476,12 @@ textarea:focus-visible {
 .hamburger {
   display: flex;
   flex-direction: column;
+  align-items: center;
+  justify-content: center;
   gap: 5px;
-  padding: 4px;
+  padding: 10px;
+  min-width: 44px;
+  min-height: 44px;
 }
 .hamburger span {
   display: block;
@@ -1134,7 +1141,9 @@ textarea:focus-visible {
   overflow: hidden;
 }
 .qty-btn {
-  width: 40px;
+  min-width: 44px;
+  min-height: 44px;
+  width: 44px;
   height: 52px;
   display: flex;
   align-items: center;

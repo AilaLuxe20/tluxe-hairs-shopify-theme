@@ -107,6 +107,7 @@ window.addEventListener('appinstalled', () => {
     menu.classList.remove('open');
     toggle.classList.remove('open');
     toggle.setAttribute('aria-expanded', 'false');
+    toggle.setAttribute('aria-label', 'Open menu');
     document.body.style.overflow = '';
   }
 
@@ -114,7 +115,12 @@ window.addEventListener('appinstalled', () => {
     const open = menu.classList.toggle('open');
     toggle.classList.toggle('open', open);
     toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    toggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
     document.body.style.overflow = open ? 'hidden' : '';
+    if (open) {
+      const first = menu.querySelector('input, a, button');
+      if (first && typeof first.focus === 'function') first.focus();
+    }
   });
 
   menu.querySelectorAll('a').forEach(a => {
@@ -453,6 +459,9 @@ window.Wishlist = Wishlist;
 
   form.querySelectorAll('.swatch-btn').forEach(btn => {
     btn.addEventListener('click', () => {
+      if (btn.classList.contains('unavailable') || btn.getAttribute('data-available') === 'false') {
+        return;
+      }
       const group = btn.closest('.variant-group');
       if (!group) return;
       group.querySelectorAll('.swatch-btn').forEach(b => {

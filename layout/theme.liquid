@@ -38,12 +38,21 @@
 
   {% if page_description %}
     <meta property="og:description" content="{{ page_description | truncate: 125 | escape }}">
+  {% else %}
+    <meta property="og:description" content="TLUXE Hairs — Premium luxury human hair wigs. Beauty Redefined.">
   {% endif %}
 
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="{{ page_title | truncate: 60 | escape }}">
   {% if page_description %}
     <meta name="twitter:description" content="{{ page_description | truncate: 125 | escape }}">
+  {% else %}
+    <meta name="twitter:description" content="TLUXE Hairs — Premium luxury human hair wigs. Beauty Redefined.">
+  {% endif %}
+  {% if page_image %}
+    <meta name="twitter:image" content="{{ page_image | image_url: width: 1200 }}">
+  {% elsif settings.og_image %}
+    <meta name="twitter:image" content="{{ settings.og_image | image_url: width: 1200 }}">
   {% endif %}
 
   <!-- PWA -->

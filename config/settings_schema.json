@@ -127,7 +127,7 @@
         "id": "facebook_url",
         "label": "Facebook URL",
         "info": "Full https URL. Leave blank to hide the icon.",
-        "default": "https://www.facebook.com/share/17vAo8ZAe8/?mibextid=wwXIfr"
+        "default": "https://www.facebook.com/Tluxehairs"
       },
       {
         "type": "text",

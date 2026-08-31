@@ -208,7 +208,7 @@
 
                     <button
                       type="button"
-                      class="swatch-btn{% if option.name == 'Length' %} swatch-btn--length{% endif %}{% if is_selected %} selected{% endif %}"
+                      class="swatch-btn{% if option.name == 'Length' %} swatch-btn--length{% endif %}{% if is_selected %} selected{% endif %}{% unless value_available %} unavailable{% endunless %}"
                       data-value="{{ value | escape }}"
                       data-available="{{ value_available }}"
                       {% if product.options.size == 1 and value_variant_id != blank %}
@@ -302,6 +302,7 @@
 
 
               <input
+                id="product-qty"
                 class="qty-input"
                 type="number"
                 name="quantity"
