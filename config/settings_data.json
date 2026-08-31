@@ -28,7 +28,7 @@
     "tiktok_url": "https://www.tiktok.com/@tluxe_hairs",
     "facebook_url": "https://www.facebook.com/Tluxehairs",
     "snapchat_url": "",
-    "show_paypal_hosted_button": false,
+    "show_paypal_hosted_button": true,
     "content_for_index": [],
     "blocks": {
       "5134484470793087125": {
