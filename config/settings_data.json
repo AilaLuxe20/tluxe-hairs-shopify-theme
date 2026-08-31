@@ -1,1 +1,85 @@
-{"current":{"logo":"shopify://shop_images/tluxe-hairs-logo-transparent.png","logo_width":160,"hero_image":"shopify://shop_images/curly-wig-back-no-watermark.png","brand_story_image":"shopify://shop_images/086D7FF3-D692-4DA6-A580-22A653762E1B.png","banner_pages":"shopify://shop_images/curly-wig-front-view.png","banner_collections":"shopify://shop_images/curly-wig-right-side.png","banner_blog":"shopify://shop_images/shopney-mobile-app-asset-a545b0eee544b452adaa0211bdeb3c97.jpg","banner_about":"shopify://shop_images/black-bob-candid.png","banner_contact":"shopify://shop_images/generate-image-for-tluxe-hairs-contact-us-page-banner-faq.png","banner_faq":"shopify://shop_images/generate-faq-page-banner-use-the-model-image-tluxe-hairs-has-a-model.png","banner_hair_care":"shopify://shop_images/curly-wig-left-natural.png","banner_wishlist":"shopify://shop_images/curly-wig-back-no-watermark.png","og_image":"shopify://shop_images/tluxe-hairs-luxury-banner.png","content_for_index":[],"blocks":{"5134484470793087125":{"type":"shopify://apps/vitals/blocks/app-embed/aeb48102-2a5a-4f39-bdbd-d8d49f4e20b8","disabled":false,"settings":{}},"7107336029660443536":{"type":"shopify://apps/progressify-multi-bar-upsells/blocks/embed/82c18c6a-85d2-42a6-aa30-f91433549659","disabled":false,"settings":{}},"14060646107696862457":{"type":"shopify://apps/judge-me-reviews/blocks/judgeme_core/61ccd3b1-a9f2-4160-9fe9-4fec8413e5d8","disabled":false,"settings":{}},"13047258039897440615":{"type":"shopify://apps/judge-me-reviews/blocks/cart_drawer_widget/61ccd3b1-a9f2-4160-9fe9-4fec8413e5d8","disabled":false,"settings":{"widget_type":"review-widget"}},"13768625480086291342":{"type":"shopify://apps/forms/blocks/forms/8744a304-fcb1-4347-b211-bb6b4759a76a","disabled":false,"settings":{}},"15683396631634586217":{"type":"shopify://apps/inbox/blocks/chat/841fc607-4181-4ad1-842d-e24d7f8bad6b","disabled":true,"settings":{"greeting_message":"","background_color":"#FFFFFF","font_color":"#000000","button_color":"#000000","secondary_color":"#FFFFFF","ternary_color":"#6A6A6A","button_icon":"chat_bubble","button_text":"chat_with_us","button_horizontal_position":"bottom_right","button_vertical_position":"lowest","agent_inherit_fonts":true,"agent_font":"system_ui_n4","agent_border_radius":16}},"17370010407503379518":{"type":"shopify://apps/wishlist-by-square/blocks/app-embed/88ec2beb-ce43-48ed-b791-0a6554082c2b","disabled":true,"settings":{}}},"whatsapp_url":"https://wa.me/message/LAQBSWXMRUJKD1","whatsapp_display_label":"","instagram_url":"https://www.instagram.com/tluxe_hairs","tiktok_url":"https://www.tiktok.com/@tluxe_hairs","facebook_url":"https://www.facebook.com/Tluxehairs","snapchat_url":"","show_paypal_hosted_button":false}}
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "current": {
+    "logo": "shopify://shop_images/tluxe-hairs-logo-transparent.png",
+    "logo_width": 160,
+    "hero_image": "shopify://shop_images/curly-wig-back-no-watermark.png",
+    "brand_story_image": "shopify://shop_images/086D7FF3-D692-4DA6-A580-22A653762E1B.png",
+    "banner_pages": "shopify://shop_images/curly-wig-front-view.png",
+    "banner_collections": "shopify://shop_images/curly-wig-right-side.png",
+    "banner_blog": "shopify://shop_images/shopney-mobile-app-asset-a545b0eee544b452adaa0211bdeb3c97.jpg",
+    "banner_about": "shopify://shop_images/black-bob-candid.png",
+    "banner_contact": "shopify://shop_images/generate-image-for-tluxe-hairs-contact-us-page-banner-faq.png",
+    "banner_faq": "shopify://shop_images/generate-faq-page-banner-use-the-model-image-tluxe-hairs-has-a-model.png",
+    "banner_hair_care": "shopify://shop_images/curly-wig-left-natural.png",
+    "banner_wishlist": "shopify://shop_images/curly-wig-back-no-watermark.png",
+    "og_image": "shopify://shop_images/tluxe-hairs-luxury-banner.png",
+    "whatsapp_url": "https://wa.me/message/LAQBSWXMRUJKD1",
+    "whatsapp_display_label": "",
+    "instagram_url": "https://www.instagram.com/tluxe_hairs",
+    "tiktok_url": "https://www.tiktok.com/@tluxe_hairs",
+    "facebook_url": "https://www.facebook.com/Tluxehairs",
+    "snapchat_url": "",
+    "show_paypal_hosted_button": false,
+    "content_for_index": [],
+    "blocks": {
+      "5134484470793087125": {
+        "type": "shopify://apps/vitals/blocks/app-embed/aeb48102-2a5a-4f39-bdbd-d8d49f4e20b8",
+        "disabled": false,
+        "settings": {}
+      },
+      "7107336029660443536": {
+        "type": "shopify://apps/progressify-multi-bar-upsells/blocks/embed/82c18c6a-85d2-42a6-aa30-f91433549659",
+        "disabled": false,
+        "settings": {}
+      },
+      "14060646107696862457": {
+        "type": "shopify://apps/judge-me-reviews/blocks/judgeme_core/61ccd3b1-a9f2-4160-9fe9-4fec8413e5d8",
+        "disabled": false,
+        "settings": {}
+      },
+      "13047258039897440615": {
+        "type": "shopify://apps/judge-me-reviews/blocks/cart_drawer_widget/61ccd3b1-a9f2-4160-9fe9-4fec8413e5d8",
+        "disabled": false,
+        "settings": {
+          "widget_type": "review-widget"
+        }
+      },
+      "13768625480086291342": {
+        "type": "shopify://apps/forms/blocks/forms/8744a304-fcb1-4347-b211-bb6b4759a76a",
+        "disabled": false,
+        "settings": {}
+      },
+      "15683396631634586217": {
+        "type": "shopify://apps/inbox/blocks/chat/841fc607-4181-4ad1-842d-e24d7f8bad6b",
+        "disabled": true,
+        "settings": {
+          "greeting_message": "",
+          "background_color": "#FFFFFF",
+          "font_color": "#000000",
+          "button_color": "#000000",
+          "button_icon": "chat_bubble",
+          "button_text": "chat_with_us",
+          "button_horizontal_position": "bottom_right",
+          "button_vertical_position": "lowest",
+          "agent_inherit_fonts": true,
+          "agent_font": "system_ui_n4",
+          "agent_border_radius": 16
+        }
+      },
+      "17370010407503379518": {
+        "type": "shopify://apps/wishlist-by-square/blocks/app-embed/88ec2beb-ce43-48ed-b791-0a6554082c2b",
+        "disabled": true,
+        "settings": {}
+      }
+    }
+  }
+}
