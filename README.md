@@ -25,14 +25,14 @@ This repository is source control for the theme. It is not the live Shopify depl
 | Judge.me review hooks | Implemented; no store reviews yet |
 | PayPal Hosted Button (existing ID, gated off) | Implemented, **disabled** |
 | Nigeria shipping rates in Shopify Admin | Configured; theme copy aligned |
-| Nigeria + US shipping quotes for a real cart | Verified via Shopify Ajax `/cart/shipping_rates.json` (same engine Checkout uses) |
+| Nigeria + international shipping quotes for a real cart | Verified via `/cart/shipping_rates.json` for Lagos, New York, London, Dubai, Johannesburg |
 | Checkout payment methods (from Checkout payload) | Paystack, ONERWAY (Direct), Bank Deposit, PayPal Express appear as available lines — **no test payment completed** |
 | Flutterwave | Not present in Checkout payload |
 | Lagos address + shipping-rate picker in hosted checkout | Rates confirmed for Lagos/Nigeria and a US address; a filled Checkout UI session was not completed |
 | Gift card template | Implemented |
 | Header and mobile search forms | Implemented |
 | Theme Check GitHub Action | Replaced by Theme CI (Liquid Theme Check + static validation) |
-| Live theme publish | Authorized this pass after Theme Check, shipping, and checkout handoff |
+| Live theme | `#163872276698` (`tluxe-hairs-shopify-theme/main`) on https://tluxehairs.shop |
 
 ---
 
@@ -163,9 +163,17 @@ Shopify Admin (default General delivery profile, Lagos location) currently inclu
 | Economy | ₦40,000 |
 | Express | ₦55,000 |
 
-The same cart with a New York address returned international Standard ₦45,000 / Economy ₦55,000 / Express ₦75,000. Theme copy states that shipping is calculated at checkout. There is **no** free-shipping threshold in Admin.
+The same cart returned those international rates for New York, London, Dubai, and Johannesburg. Theme copy states that shipping is calculated at checkout. There is **no** free-shipping threshold in Admin.
 
-A second non-default **Rest of World** profile has **no products assigned**. Nigeria was removed from that unused profile so it cannot compete with the General Nigeria zone. Catalog products use the default profile.
+The default **General** profile (catalog products, Lagos location) has:
+
+| Zone | Destinations | Rates |
+| --- | --- | --- |
+| Nigeria | NG | Standard ₦25,000 / Economy ₦40,000 / Express ₦55,000 |
+| international | 175 named countries including US, GB, CA, AE, and much of Europe | Standard ₦45,000 / Economy ₦55,000 / Express ₦75,000 |
+| Rest of World | Shopify rest-of-world catch-all (same existing international amounts) | Standard ₦45,000 / Economy ₦55,000 / Express ₦75,000 |
+
+A second non-default **Rest of World** *profile* has **no products assigned**. Catalog products use the default General profile. Rate amounts were not invented; the catch-all zone reuses the existing international prices.
 
 ### Reviews (Judge.me)
 
@@ -225,8 +233,9 @@ Shopify Theme Check reports `RemoteAsset` warnings for Google Fonts and the gate
 | Add to cart (multiple products / correct variant IDs) | 200, currency NGN |
 | Checkout handoff | 302 to Shopify Checkout (`en-ng`) with the development preview theme |
 | Lagos shipping quotes | Standard ₦25,000 / Economy ₦40,000 / Express ₦55,000 |
-| US shipping quotes | Standard ₦45,000 / Economy ₦55,000 / Express ₦75,000 |
-| Customer account URLs | 302 to New Customer Accounts (`region_country=AE`) |
+| New York / London / Dubai shipping quotes | Standard ₦45,000 / Economy ₦55,000 / Express ₦75,000 |
+| Johannesburg (Africa catch-all) | Same international amounts |
+| Customer account URLs | 302 to New Customer Accounts |
 
 A filled hosted Checkout address form (browser UI) was **not** completed. No real payment was taken.
 
@@ -271,12 +280,12 @@ There is no `sections/` directory.
 
 - **Payments** appear in Checkout (Paystack, ONERWAY, Bank Deposit, PayPal Express) but no test order has been paid. Do not treat them as production-proven until a test/live transaction succeeds. Flutterwave is not listed.
 - **Hosted PayPal button** is a parallel path and stays disabled for normal catalog checkout.
-- **Markets:** the leftover market (formerly handle `ae`, misnamed Nigeria, 236 countries, no Nigeria) was renamed `international` and set to **Draft** so it no longer matches buyers. Nigeria stays on the primary **Rest of World** market (catalogs Wigs + Products). Shopify rejected adding Nigeria to a second market (`DUPLICATE_REGION_MARKET`). Making a Nigeria-only primary market requires removing Nigeria from Rest of World in Admin — that is destructive and was not done. Shop timezone is still `Africa/Algiers` (API cannot change it; set **Africa/Lagos** in Admin). Checkout handoff in this pass used `en-ng`.
+- **Markets:** an active **Nigeria** market now exists (`handle: nigeria`, country NG only, Wigs + Products catalogs). Nigeria was then removed from the primary Rest of World market so buyers in NG match the Nigeria market. The leftover UAE-era market (`handle: international`) stays **Draft**. Shop timezone is still `Africa/Algiers` (API cannot change it; set **Africa/Lagos** in Admin).
 - **Navigation** comes from Shopify `main-menu-1` (fallback `main-menu`). The live menu is long; the theme wraps it and skips duplicate URLs.
 - **Sold-out variants** are blocked in the theme UI. Shopify `/cart/add.js` may still accept a crafted request for a DENY/zero-inventory variant; Checkout can refuse it later.
 - **Judge.me** will look empty until customers leave real reviews.
 - **Wishlist:** theme `localStorage` list on `/pages/wishlist` is the storefront source of truth. The Wishlist-by-Square embed is disabled.
-- This GitHub remote is **not** what publishes the live shop.
+- GitHub `main` is connected to live theme `#163872276698`. Shopify Admin can still overwrite `settings_data.json` (it re-enabled the Hosted PayPal button once; the theme setting is off again).
 
 ---
 
